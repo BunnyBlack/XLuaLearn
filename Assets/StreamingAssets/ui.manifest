@@ -1,0 +1,18 @@
+ManifestFileVersion: 0
+CRC: 2846073136
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 3b35b0a3b3038f3685d414a0f7efb1ba
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 7859cd501ea75098bcf7e53f1b477c26
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+Assets:
+- Assets/Data/UI/cs.png
+- Assets/Data/UI/doge.jpg
+- Assets/Data/UI/android.png
+Dependencies: []
