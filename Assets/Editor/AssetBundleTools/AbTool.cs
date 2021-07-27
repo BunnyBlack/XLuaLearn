@@ -8,8 +8,8 @@ namespace Editor.AssetBundleTools
 {
     public class AbTool : UnityEditor.Editor
     {
-        private List<string> fileTypeBundleList = new List<string>();
-        private List<string> dirTypeBundleList = new List<string>();
+        private List<string> _fileTypeBundleList = new List<string>();
+        private List<string> _dirTypeBundleList = new List<string>();
         
         
         [MenuItem("Tools/打包工具/生成打包配置xml")]
