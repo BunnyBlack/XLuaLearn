@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,15 +9,11 @@ namespace Editor
         [MenuItem("test/test", false, 1)]
         private static void Test1()
         {
-            var assetBundleBuildList = new List<AssetBundleBuild>();
-            var assetBundleBuild = new AssetBundleBuild { assetNames = new[] { "Assets\\Data\\UI" }, assetBundleName = "UI" };
-            assetBundleBuildList.Add(assetBundleBuild);
-
-            BuildPipeline.BuildAssetBundles(Global.BundleOutputPath,
-                assetBundleBuildList.ToArray(),
-                BuildAssetBundleOptions.ChunkBasedCompression,
-                EditorUserBuildSettings.activeBuildTarget);
-            AssetDatabase.Refresh();
+            var files = AssetDatabase.GetDependencies("Assets\\Data\\UI\\Text.prefab");
+            foreach (var file in files)
+            {
+                Debug.Log(file);
+            }
         }
 
         [MenuItem("test/清空StreamingAssets文件夹", false, 100)]
@@ -31,6 +26,16 @@ namespace Editor
 
             Directory.CreateDirectory(Global.BundleOutputPath);
             AssetDatabase.Refresh();
+        }
+
+        [MenuItem("test/TestBuild")]
+        private static void TestBuild()
+        {
+            BuildPipeline.BuildAssetBundles(Global.BundleOutputPath,
+                BuildAssetBundleOptions.ChunkBasedCompression,
+                EditorUserBuildSettings.activeBuildTarget);
+            AssetDatabase.Refresh();
+            Debug.Log("打ab包");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using UnityEditor;
@@ -8,9 +9,16 @@ namespace Editor.AssetBundleTools
 {
     public class AbTool : UnityEditor.Editor
     {
-        private List<string> _fileTypeBundleList = new List<string>();
-        private List<string> _dirTypeBundleList = new List<string>();
-        
+        // 需要打bundle的路径列表
+        private static readonly List<string> FileTypeConfigList = new List<string>();
+        private static readonly List<string> DirTypeConfigList = new List<string>();
+
+        // key -> filename  value -> file path
+        private static readonly Dictionary<string, string> FileTypePathDic = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> DirTypePathDic = new Dictionary<string, string>();
+
+        // key -> bundle name  value -> filenames in bundle
+        private static readonly Dictionary<string, List<string>> BundleDependencyDic = new Dictionary<string, List<string>>();
         
         [MenuItem("Tools/打包工具/生成打包配置xml")]
         private static void CreateBundlePathConfig()
@@ -31,9 +39,9 @@ namespace Editor.AssetBundleTools
             var modelPath = xmlDoc.CreateElement("item");
             SetBundleXmlAttribute(modelPath, Global.RootPath + "/Data/Model", "file");
             root.AppendChild(modelPath);
-            
+
             var uiPath = xmlDoc.CreateElement("item");
-            SetBundleXmlAttribute(uiPath,Global.RootPath + "/Data/UI", "file");
+            SetBundleXmlAttribute(uiPath, Global.RootPath + "/Data/UI", "file");
             root.AppendChild(uiPath);
 
             var scenePath = xmlDoc.CreateElement("item");
@@ -62,8 +70,6 @@ namespace Editor.AssetBundleTools
         }
 
 
-
-
         [MenuItem("Tools/打包工具/打ab包")]
         private static void BuildAssetBundles()
         {
@@ -71,15 +77,20 @@ namespace Editor.AssetBundleTools
 
             var assetBundleBuildList = new List<AssetBundleBuild>();
 
-            GetAssetBundleBuildList(assetBundleBuildList);
-            
+            ParseBundleConfig();
+            CreateFilePathDicReferringToConfig();
+            GetBundleBuildConfig(assetBundleBuildList);
+
             BuildPipeline.BuildAssetBundles(Global.BundleOutputPath,
                 assetBundleBuildList.ToArray(),
                 BuildAssetBundleOptions.ChunkBasedCompression,
                 EditorUserBuildSettings.activeBuildTarget);
+
+            GenerateBundleDependencyConfig();
             AssetDatabase.Refresh();
             Debug.Log("打ab包");
         }
+
 
 
 
@@ -95,14 +106,133 @@ namespace Editor.AssetBundleTools
             Directory.CreateDirectory(Global.BundleOutputPath);
             AssetDatabase.Refresh();
         }
-        
+
         private static void SetBundleXmlAttribute(XmlElement element, string path, string type)
         {
             element.SetAttribute("path", path);
             element.SetAttribute("bundle_type", type);
         }
-        
-        private static void GetAssetBundleBuildList(List<AssetBundleBuild> assetBundleBuildList)
+
+        private static void ParseBundleConfig()
+        {
+            DirTypeConfigList.Clear();
+            FileTypeConfigList.Clear();
+
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(Global.BundlePathConfigPath);
+
+            var elements = xmlDoc.GetElementsByTagName("item");
+            foreach (XmlElement element in elements)
+            {
+                var type = element.GetAttribute("bundle_type");
+                var path = element.GetAttribute("path");
+
+                // 根据类型将需要处理的路径放入待处理列表中
+                switch (type)
+                {
+                    case "dir" when !string.IsNullOrEmpty(path):
+                        DirTypeConfigList.Add(path);
+                        break;
+                    case "dir":
+                        Debug.Log("path为空");
+                        break;
+                    case "file" when !string.IsNullOrEmpty(path):
+                        FileTypeConfigList.Add(path);
+                        break;
+                    case "file":
+                        Debug.Log("path为空");
+                        break;
+                    default:
+                        Debug.Log($"错误的打包类型：{type}");
+                        break;
+                }
+            }
+        }
+
+        private static void CreateFilePathDicReferringToConfig()
+        {
+            FileTypePathDic.Clear();
+            DirTypePathDic.Clear();
+
+            // 按文件夹打包的类型也做全文件遍历，用于剔除冗余用
+            foreach (var path in DirTypeConfigList)
+            {
+                TraverseDirectory(path, DirTypePathDic);
+            }
+
+            foreach (var path in FileTypeConfigList)
+            {
+                TraverseDirectory(path, FileTypePathDic);
+            }
+        }
+
+        private static void TraverseDirectory(string rootPath, IDictionary<string, string> sourceDic)
+        {
+            var files = Directory.GetFiles(rootPath);
+
+            foreach (var fullPath in files)
+            {
+                if (fullPath.EndsWith(".meta"))
+                    continue;
+
+                var filename = Path.GetFileNameWithoutExtension(fullPath);
+                if (sourceDic.ContainsKey(filename))
+                {
+                    var message = new[]
+                    {
+                        "已包含同名资源!",
+                        $"fileName: {filename}",
+                        $"existing path: {sourceDic[filename]}",
+                        $"incoming path: {fullPath}"
+                    };
+                    Debug.Log(string.Join("\n", message));
+                }
+                else
+                {
+                    sourceDic.Add(filename, fullPath);
+                }
+            }
+
+            var subDirectories = Directory.GetDirectories(rootPath);
+
+            foreach (var directory in subDirectories)
+            {
+                TraverseDirectory(directory, sourceDic);
+            }
+        }
+
+        private static void GetBundleBuildConfig(ICollection<AssetBundleBuild> assetBundleBuildList)
+        {
+            BundleDependencyDic.Clear();
+            
+            // 先生成按文件夹的打包
+            foreach (var path in DirTypeConfigList)
+            {
+                var assetBundleBuild = new AssetBundleBuild();
+                assetBundleBuild.assetBundleName = EditorUtil.GetBundleName(path);
+                assetBundleBuild.assetNames = new[] { path };
+                assetBundleBuildList.Add(assetBundleBuild);
+            }
+
+            // 按单个文件文件打包 需要获取依赖并剔除冗余
+            foreach (var pair in FileTypePathDic)
+            {
+                var filename = pair.Key;
+                var filePath = pair.Value;
+
+                var relativePath = EditorUtil.GetUnityPath(filePath);
+                var dependencies = AssetDatabase.GetDependencies(relativePath);
+
+                // 依赖已经包含了该资源本身
+                foreach (var dependency in dependencies)
+                {
+                    var dependencyName = Path.GetFileNameWithoutExtension(dependency);
+                    
+                }
+            }
+        }
+
+        private static void GenerateBundleDependencyConfig()
         {
             
         }
