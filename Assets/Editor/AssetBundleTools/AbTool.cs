@@ -13,11 +13,11 @@ namespace Editor.AssetBundleTools
         private static readonly List<string> FileTypeConfigList = new List<string>();
         private static readonly List<string> DirTypeConfigList = new List<string>();
 
-        // key -> filename  value -> file path
+        // key -> filename without extension  value -> file path
         private static readonly Dictionary<string, string> FileTypePathDic = new Dictionary<string, string>();
         private static readonly Dictionary<string, string> DirTypePathDic = new Dictionary<string, string>();
 
-        // key -> bundle name  value -> filenames in bundle
+        // key -> filename without extension  value -> bundle name
         private static readonly Dictionary<string, List<string>> BundleDependencyDic = new Dictionary<string, List<string>>();
         
         [MenuItem("Tools/打包工具/生成打包配置xml")]
@@ -212,6 +212,16 @@ namespace Editor.AssetBundleTools
                 assetBundleBuild.assetBundleName = EditorUtil.GetBundleName(path);
                 assetBundleBuild.assetNames = new[] { path };
                 assetBundleBuildList.Add(assetBundleBuild);
+            }
+            
+            // 构建按文件夹生成的包的依赖字典
+            foreach (var pair in DirTypePathDic)
+            {
+                var filename = pair.Key;
+                var filePath = pair.Value;
+
+                var bundleName = EditorUtil.GetBundleName(filePath);
+                
             }
 
             // 按单个文件文件打包 需要获取依赖并剔除冗余
