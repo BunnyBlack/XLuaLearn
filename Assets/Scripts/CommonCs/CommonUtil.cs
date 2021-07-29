@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using UnityEngine;
 
 namespace CommonCs
@@ -19,7 +20,7 @@ namespace CommonCs
             Debug.LogError($"路径未包含Assets: {absolutePath}");
             return absolutePath;
         }
-        
+
         /// <summary>
         /// 从Assets的子目录开始的路径（不含Assets）
         /// </summary>
@@ -48,6 +49,16 @@ namespace CommonCs
             }
 
             return bundleName;
+        }
+
+        /// <summary>
+        /// 获取标准路径
+        /// </summary>
+        /// <param name="path">任意路径</param>
+        /// <returns>标准路径</returns>
+        public static string GetStandardPath(string path)
+        {
+            return string.IsNullOrEmpty(path) ? string.Empty : path.Trim().Replace("\\", "/");
         }
     }
 }

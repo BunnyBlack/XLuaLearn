@@ -32,23 +32,23 @@ namespace Editor.AssetBundleTools
             xmlDoc.AppendChild(root);
 
             var audioPath = xmlDoc.CreateElement("item");
-            SetBundleXmlAttribute(audioPath, Global.RootPath + "/Data/Audio", "dir");
+            SetBundleXmlAttribute(audioPath, CommonUtil.GetStandardPath(Global.RootPath + "/Data/Audio"), "dir");
             root.AppendChild(audioPath);
 
             var effectPath = xmlDoc.CreateElement("item");
-            SetBundleXmlAttribute(effectPath, Global.RootPath + "/Data/Effect", "dir");
+            SetBundleXmlAttribute(effectPath, CommonUtil.GetStandardPath(Global.RootPath + "/Data/Effect"), "dir");
             root.AppendChild(effectPath);
 
             var modelPath = xmlDoc.CreateElement("item");
-            SetBundleXmlAttribute(modelPath, Global.RootPath + "/Data/Model", "file");
+            SetBundleXmlAttribute(modelPath, CommonUtil.GetStandardPath(Global.RootPath + "/Data/Model"), "file");
             root.AppendChild(modelPath);
 
             var uiPath = xmlDoc.CreateElement("item");
-            SetBundleXmlAttribute(uiPath, Global.RootPath + "/Data/UI", "file");
+            SetBundleXmlAttribute(uiPath, CommonUtil.GetStandardPath(Global.RootPath + "/Data/UI"), "file");
             root.AppendChild(uiPath);
 
             var scenePath = xmlDoc.CreateElement("item");
-            SetBundleXmlAttribute(scenePath, Global.RootPath + "/Scenes", "dir");
+            SetBundleXmlAttribute(scenePath, CommonUtil.GetStandardPath(Global.RootPath + "/Scenes"), "dir");
             root.AppendChild(scenePath);
 
             // var commonCsPath = xmlDoc.CreateElement("item");
@@ -298,7 +298,7 @@ namespace Editor.AssetBundleTools
                 foreach (var dependencyName in dependencies)
                 {
                     var dependencyNode = xmlDoc.CreateElement("dependency");
-                    dependencyNode.SetAttribute("name", dependencyName);
+                    dependencyNode.SetAttribute("name", CommonUtil.GetStandardPath(dependencyName));
                     bundleNode.AppendChild(dependencyNode);
                 }
             }
@@ -322,7 +322,7 @@ namespace Editor.AssetBundleTools
 
                 var fileNode = xmlDoc.CreateElement("file");
                 fileNode.SetAttribute("name", filename);
-                fileNode.SetAttribute("bundle_name", fullPath);
+                fileNode.SetAttribute("bundle_name", CommonUtil.GetStandardPath(fullPath));
                 root.AppendChild(fileNode);
             }
             
@@ -333,7 +333,7 @@ namespace Editor.AssetBundleTools
 
                 var fileNode = xmlDoc.CreateElement("file");
                 fileNode.SetAttribute("name", filename);
-                fileNode.SetAttribute("bundle_name", fullPath);
+                fileNode.SetAttribute("bundle_name", CommonUtil.GetStandardPath(fullPath));
                 root.AppendChild(fileNode);
             }
             
