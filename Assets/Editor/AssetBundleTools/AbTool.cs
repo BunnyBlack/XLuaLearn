@@ -91,10 +91,11 @@ namespace Editor.AssetBundleTools
 
             GenerateBundleDependencyConfig();
             GenerateFileIndexConfig();
+            ClearUnusedBundle();
             AssetDatabase.Refresh();
             Debug.Log("打ab包");
         }
-
+        
 
 
         # region tools
@@ -102,9 +103,7 @@ namespace Editor.AssetBundleTools
         private static void CreateStreamingDir()
         {
             if (Directory.Exists(Global.BundleOutputPath))
-            {
-                Directory.Delete(Global.BundleOutputPath, true);
-            }
+                return;
 
             Directory.CreateDirectory(Global.BundleOutputPath);
             AssetDatabase.Refresh();
@@ -223,7 +222,8 @@ namespace Editor.AssetBundleTools
                 var filename = pair.Key;
                 var filePath = pair.Value;
 
-                var bundleName = CommonUtil.GetBundleName(filePath);
+                var dirName = Path.GetDirectoryName(filePath);
+                var bundleName = CommonUtil.GetBundleName(dirName);
                 
                 PackagedBundleDic.Add(filename, bundleName);
             }
@@ -237,7 +237,7 @@ namespace Editor.AssetBundleTools
                 var relativePath = CommonUtil.GetUnityPath(filePath);
                 var dependencies = AssetDatabase.GetDependencies(relativePath);
 
-                var bundleName = CommonUtil.GetBundleName(relativePath);
+                var bundleName = CommonUtil.GetStandardPath(CommonUtil.GetBundleName(relativePath));
 
                 var assetBundleBuild = new AssetBundleBuild();
                 assetBundleBuild.assetBundleName = bundleName;
@@ -250,22 +250,22 @@ namespace Editor.AssetBundleTools
                     if(dependency.EndsWith(".cs"))
                         continue;
                     var dependencyName = Path.GetFileNameWithoutExtension(dependency);
-                    
+
                     // 如果依赖的文件已经打过包了，就不再打进自己的包，而是建立包依赖
                     if (PackagedBundleDic.ContainsKey(dependencyName))
                     {
                         if (PackagedBundleDic[dependencyName] == bundleName)
                             continue;
 
-                        if (BundleDependencyDic.ContainsKey(dependencyName))
+                        if (BundleDependencyDic.ContainsKey(bundleName))
                         {
-                            var dependencyList = BundleDependencyDic[dependencyName];
+                            var dependencyList = BundleDependencyDic[bundleName];
                             dependencyList.Add(PackagedBundleDic[dependencyName]);
                         }
                         else
                         {
                             var dependencyList = new List<string> { PackagedBundleDic[dependencyName] };
-                            BundleDependencyDic.Add(dependencyName, dependencyList);
+                            BundleDependencyDic.Add(bundleName, dependencyList);
                         }
                     }
                     else
@@ -315,29 +315,25 @@ namespace Editor.AssetBundleTools
             var root = xmlDoc.CreateElement("file_index");
             xmlDoc.AppendChild(root);
 
-            foreach (var pair in DirTypePathDic)
+            foreach (var pair in PackagedBundleDic)
             {
                 var filename = pair.Key;
-                var fullPath = pair.Value;
+                var bundleName = pair.Value;
 
                 var fileNode = xmlDoc.CreateElement("file");
                 fileNode.SetAttribute("name", filename);
-                fileNode.SetAttribute("bundle_name", CommonUtil.GetStandardPath(fullPath));
+                fileNode.SetAttribute("bundle_name", CommonUtil.GetStandardPath(bundleName));
                 root.AppendChild(fileNode);
             }
             
-            foreach (var pair in FileTypePathDic)
-            {
-                var filename = pair.Key;
-                var fullPath = pair.Value;
-
-                var fileNode = xmlDoc.CreateElement("file");
-                fileNode.SetAttribute("name", filename);
-                fileNode.SetAttribute("bundle_name", CommonUtil.GetStandardPath(fullPath));
-                root.AppendChild(fileNode);
-            }
+            
             
             xmlDoc.Save(xmlPath);
+        }
+        
+        private static void ClearUnusedBundle()
+        {
+            
         }
 
         # endregion
