@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2846073136
+CRC: 2482179711
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 3b35b0a3b3038f3685d414a0f7efb1ba
+    Hash: 4dfc681c7487129a2446695cda7b7b32
   TypeTreeHash:
     serializedVersion: 2
     Hash: 7859cd501ea75098bcf7e53f1b477c26
@@ -12,7 +12,5 @@ ClassTypes:
 - Class: 28
   Script: {instanceID: 0}
 Assets:
-- Assets/Data/UI/cs.png
-- Assets/Data/UI/doge.jpg
-- Assets/Data/UI/android.png
+- Assets/Data/Model/android.png
 Dependencies: []

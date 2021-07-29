@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using UnityEditor;
 using UnityEngine;
 
-namespace Editor
+namespace CommonCs
 {
-    public class EditorUtil : UnityEditor.Editor
+    public static class CommonUtil
     {
         /// <summary>
         /// 通过绝对路径获取相对 Assets 文件夹的相对路径

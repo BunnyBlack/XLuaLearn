@@ -1,0 +1,16 @@
+ManifestFileVersion: 0
+CRC: 2430803204
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 084a1cb0a1b6fc6635243e032d182710
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 7859cd501ea75098bcf7e53f1b477c26
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+Assets:
+- Assets/Data/Model/cat.png
+Dependencies: []

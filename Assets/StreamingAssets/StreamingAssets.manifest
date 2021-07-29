@@ -1,7 +1,32 @@
 ManifestFileVersion: 0
-CRC: 429903351
+CRC: 463479498
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
-      Name: ui
+      Name: data/audio
       Dependencies: {}
+    Info_1:
+      Name: data/effect
+      Dependencies: {}
+    Info_2:
+      Name: scenes
+      Dependencies: {}
+    Info_3:
+      Name: data/model/android
+      Dependencies: {}
+    Info_4:
+      Name: data/model/cat
+      Dependencies: {}
+    Info_5:
+      Name: data/model/cs
+      Dependencies: {}
+    Info_6:
+      Name: data/model/doge
+      Dependencies: {}
+    Info_7:
+      Name: data/ui/image
+      Dependencies: {}
+    Info_8:
+      Name: data/ui/text
+      Dependencies:
+        Dependency_0: data/ui/image

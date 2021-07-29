@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using CommonCs;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,11 +14,13 @@ namespace Editor.AssetBundleTools
         private static readonly List<string> FileTypeConfigList = new List<string>();
         private static readonly List<string> DirTypeConfigList = new List<string>();
 
-        // key -> filename without extension  value -> file path
+        // key -> filename without extension  value -> file fullPath
         private static readonly Dictionary<string, string> FileTypePathDic = new Dictionary<string, string>();
         private static readonly Dictionary<string, string> DirTypePathDic = new Dictionary<string, string>();
 
         // key -> filename without extension  value -> bundle name
+        private static readonly Dictionary<string, string> PackagedBundleDic = new Dictionary<string, string>();
+        // key -> bundleName  value -> list of dependent bundle      key depend on value
         private static readonly Dictionary<string, List<string>> BundleDependencyDic = new Dictionary<string, List<string>>();
         
         [MenuItem("Tools/打包工具/生成打包配置xml")]
@@ -87,10 +90,10 @@ namespace Editor.AssetBundleTools
                 EditorUserBuildSettings.activeBuildTarget);
 
             GenerateBundleDependencyConfig();
+            GenerateFileIndexConfig();
             AssetDatabase.Refresh();
             Debug.Log("打ab包");
         }
-
 
 
 
@@ -180,12 +183,12 @@ namespace Editor.AssetBundleTools
                 {
                     var message = new[]
                     {
-                        "已包含同名资源!",
+                        "包含同名资源!",
                         $"fileName: {filename}",
                         $"existing path: {sourceDic[filename]}",
                         $"incoming path: {fullPath}"
                     };
-                    Debug.Log(string.Join("\n", message));
+                    Debug.LogError(string.Join("\n", message));
                 }
                 else
                 {
@@ -203,25 +206,26 @@ namespace Editor.AssetBundleTools
 
         private static void GetBundleBuildConfig(ICollection<AssetBundleBuild> assetBundleBuildList)
         {
-            BundleDependencyDic.Clear();
+            PackagedBundleDic.Clear();
             
             // 先生成按文件夹的打包
             foreach (var path in DirTypeConfigList)
             {
                 var assetBundleBuild = new AssetBundleBuild();
-                assetBundleBuild.assetBundleName = EditorUtil.GetBundleName(path);
-                assetBundleBuild.assetNames = new[] { path };
+                assetBundleBuild.assetBundleName = CommonUtil.GetBundleName(path);
+                assetBundleBuild.assetNames = new[] { CommonUtil.GetUnityPath(path) };
                 assetBundleBuildList.Add(assetBundleBuild);
             }
             
-            // 构建按文件夹生成的包的依赖字典
+            // 构建按文件夹生成的文件与包对应关系的字典
             foreach (var pair in DirTypePathDic)
             {
                 var filename = pair.Key;
                 var filePath = pair.Value;
 
-                var bundleName = EditorUtil.GetBundleName(filePath);
+                var bundleName = CommonUtil.GetBundleName(filePath);
                 
+                PackagedBundleDic.Add(filename, bundleName);
             }
 
             // 按单个文件文件打包 需要获取依赖并剔除冗余
@@ -230,21 +234,110 @@ namespace Editor.AssetBundleTools
                 var filename = pair.Key;
                 var filePath = pair.Value;
 
-                var relativePath = EditorUtil.GetUnityPath(filePath);
+                var relativePath = CommonUtil.GetUnityPath(filePath);
                 var dependencies = AssetDatabase.GetDependencies(relativePath);
 
+                var bundleName = CommonUtil.GetBundleName(relativePath);
+
+                var assetBundleBuild = new AssetBundleBuild();
+                assetBundleBuild.assetBundleName = bundleName;
+
+                var fileList = new List<string>();
+                
                 // 依赖已经包含了该资源本身
                 foreach (var dependency in dependencies)
                 {
+                    if(dependency.EndsWith(".cs"))
+                        continue;
                     var dependencyName = Path.GetFileNameWithoutExtension(dependency);
                     
+                    // 如果依赖的文件已经打过包了，就不再打进自己的包，而是建立包依赖
+                    if (PackagedBundleDic.ContainsKey(dependencyName))
+                    {
+                        if (PackagedBundleDic[dependencyName] == bundleName)
+                            continue;
+
+                        if (BundleDependencyDic.ContainsKey(dependencyName))
+                        {
+                            var dependencyList = BundleDependencyDic[dependencyName];
+                            dependencyList.Add(PackagedBundleDic[dependencyName]);
+                        }
+                        else
+                        {
+                            var dependencyList = new List<string> { PackagedBundleDic[dependencyName] };
+                            BundleDependencyDic.Add(dependencyName, dependencyList);
+                        }
+                    }
+                    else
+                    {
+                        fileList.Add(CommonUtil.GetUnityPath(dependency));
+                        PackagedBundleDic.Add(dependencyName, bundleName);
+                    }
                 }
+                assetBundleBuild.assetNames = fileList.ToArray();
+                assetBundleBuildList.Add(assetBundleBuild);
             }
         }
 
         private static void GenerateBundleDependencyConfig()
         {
+            // 建立包与依赖包关系配置
+            var xmlPath = Global.BundleOutputPath + "/bundleDependency.xml";
+            var xmlDoc = new XmlDocument();
+            var root = xmlDoc.CreateElement("bundle_dependency");
+            xmlDoc.AppendChild(root);
             
+            foreach (var pair in BundleDependencyDic)
+            {
+                var bundleName = pair.Key;
+                var dependencies = pair.Value;
+                var bundleNode = xmlDoc.CreateElement("bundle");
+                bundleNode.SetAttribute("name", bundleName);
+                root.AppendChild(bundleNode);
+
+                foreach (var dependencyName in dependencies)
+                {
+                    var dependencyNode = xmlDoc.CreateElement("dependency");
+                    dependencyNode.SetAttribute("name", dependencyName);
+                    bundleNode.AppendChild(dependencyNode);
+                }
+            }
+            
+            xmlDoc.Save(xmlPath);
+        }
+        
+        
+        private static void GenerateFileIndexConfig()
+        {
+            // 建立文件与包名之间的关联配置
+            var xmlPath = Global.BundleOutputPath + "/fileIndex.xml";
+            var xmlDoc = new XmlDocument();
+            var root = xmlDoc.CreateElement("file_index");
+            xmlDoc.AppendChild(root);
+
+            foreach (var pair in DirTypePathDic)
+            {
+                var filename = pair.Key;
+                var fullPath = pair.Value;
+
+                var fileNode = xmlDoc.CreateElement("file");
+                fileNode.SetAttribute("name", filename);
+                fileNode.SetAttribute("bundle_name", fullPath);
+                root.AppendChild(fileNode);
+            }
+            
+            foreach (var pair in FileTypePathDic)
+            {
+                var filename = pair.Key;
+                var fullPath = pair.Value;
+
+                var fileNode = xmlDoc.CreateElement("file");
+                fileNode.SetAttribute("name", filename);
+                fileNode.SetAttribute("bundle_name", fullPath);
+                root.AppendChild(fileNode);
+            }
+            
+            xmlDoc.Save(xmlPath);
         }
 
         # endregion
