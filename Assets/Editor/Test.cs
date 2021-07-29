@@ -9,11 +9,7 @@ namespace Editor
         [MenuItem("test/test", false, 1)]
         private static void Test1()
         {
-            var files = AssetDatabase.GetDependencies("Assets\\Data\\UI\\Text.prefab");
-            foreach (var file in files)
-            {
-                Debug.Log(file);
-            }
+            
         }
 
         [MenuItem("test/清空StreamingAssets文件夹", false, 100)]

@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using CommonCs;
 using UnityEditor;
@@ -20,9 +20,10 @@ namespace Editor.AssetBundleTools
 
         // key -> filename without extension  value -> bundle name
         private static readonly Dictionary<string, string> PackagedBundleDic = new Dictionary<string, string>();
+
         // key -> bundleName  value -> list of dependent bundle      key depend on value
         private static readonly Dictionary<string, List<string>> BundleDependencyDic = new Dictionary<string, List<string>>();
-        
+
         [MenuItem("Tools/打包工具/生成打包配置xml")]
         private static void CreateBundlePathConfig()
         {
@@ -95,7 +96,6 @@ namespace Editor.AssetBundleTools
             AssetDatabase.Refresh();
             Debug.Log("打ab包");
         }
-        
 
 
         # region tools
@@ -206,7 +206,7 @@ namespace Editor.AssetBundleTools
         private static void GetBundleBuildConfig(ICollection<AssetBundleBuild> assetBundleBuildList)
         {
             PackagedBundleDic.Clear();
-            
+
             // 先生成按文件夹的打包
             foreach (var path in DirTypeConfigList)
             {
@@ -215,7 +215,7 @@ namespace Editor.AssetBundleTools
                 assetBundleBuild.assetNames = new[] { CommonUtil.GetUnityPath(path) };
                 assetBundleBuildList.Add(assetBundleBuild);
             }
-            
+
             // 构建按文件夹生成的文件与包对应关系的字典
             foreach (var pair in DirTypePathDic)
             {
@@ -224,7 +224,7 @@ namespace Editor.AssetBundleTools
 
                 var dirName = Path.GetDirectoryName(filePath);
                 var bundleName = CommonUtil.GetBundleName(dirName);
-                
+
                 PackagedBundleDic.Add(filename, bundleName);
             }
 
@@ -243,12 +243,13 @@ namespace Editor.AssetBundleTools
                 assetBundleBuild.assetBundleName = bundleName;
 
                 var fileList = new List<string>();
-                
+
                 // 依赖已经包含了该资源本身
                 foreach (var dependency in dependencies)
                 {
-                    if(dependency.EndsWith(".cs"))
+                    if (dependency.EndsWith(".cs"))
                         continue;
+
                     var dependencyName = Path.GetFileNameWithoutExtension(dependency);
 
                     // 如果依赖的文件已经打过包了，就不再打进自己的包，而是建立包依赖
@@ -286,27 +287,27 @@ namespace Editor.AssetBundleTools
             var xmlDoc = new XmlDocument();
             var root = xmlDoc.CreateElement("bundle_dependency");
             xmlDoc.AppendChild(root);
-            
+
             foreach (var pair in BundleDependencyDic)
             {
                 var bundleName = pair.Key;
                 var dependencies = pair.Value;
                 var bundleNode = xmlDoc.CreateElement("bundle");
-                bundleNode.SetAttribute("name", bundleName);
+                bundleNode.SetAttribute("name", bundleName.ToLower());
                 root.AppendChild(bundleNode);
 
                 foreach (var dependencyName in dependencies)
                 {
                     var dependencyNode = xmlDoc.CreateElement("dependency");
-                    dependencyNode.SetAttribute("name", CommonUtil.GetStandardPath(dependencyName));
+                    dependencyNode.SetAttribute("name", CommonUtil.GetStandardPath(dependencyName).ToLower());
                     bundleNode.AppendChild(dependencyNode);
                 }
             }
-            
+
             xmlDoc.Save(xmlPath);
         }
-        
-        
+
+
         private static void GenerateFileIndexConfig()
         {
             // 建立文件与包名之间的关联配置
@@ -321,19 +322,70 @@ namespace Editor.AssetBundleTools
                 var bundleName = pair.Value;
 
                 var fileNode = xmlDoc.CreateElement("file");
-                fileNode.SetAttribute("name", filename);
-                fileNode.SetAttribute("bundle_name", CommonUtil.GetStandardPath(bundleName));
+                fileNode.SetAttribute("name", filename.ToLower());
+                fileNode.SetAttribute("bundle_name", CommonUtil.GetStandardPath(bundleName).ToLower());
                 root.AppendChild(fileNode);
             }
-            
-            
-            
+
+
             xmlDoc.Save(xmlPath);
         }
-        
+
         private static void ClearUnusedBundle()
         {
-            
+            var allUsedBundleNames = AssetDatabase.GetAllAssetBundleNames();
+            var unusedBundles = new List<string>();
+            var allUsedBundleDic = allUsedBundleNames.ToDictionary(usedBundleName => usedBundleName, usedBundleName => true);
+
+            TraverseStreamingAssets(Global.BundleOutputPath, unusedBundles, allUsedBundleDic);
+
+            foreach (var unusedBundle in unusedBundles)
+            {
+                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(unusedBundle);
+                var unusedBundleMeta = fileNameWithoutExtension + ".meta";
+                var unusedBundleManifest = fileNameWithoutExtension + ".manifest";
+                var unusedBundleManifestMeta = fileNameWithoutExtension + ".manifest.meta";
+
+                if (File.Exists(unusedBundle))
+                {
+                    File.Delete(unusedBundle);
+                }
+                if (File.Exists(unusedBundleMeta))
+                {
+                    File.Delete(unusedBundleMeta);
+                }
+                if (File.Exists(unusedBundleManifest))
+                {
+                    File.Delete(unusedBundleManifest);
+                }
+                if (File.Exists(unusedBundleManifestMeta))
+                {
+                    File.Delete(unusedBundleManifestMeta);
+                }
+            }
+        }
+
+        private static void TraverseStreamingAssets(string rootPath, List<string> unusedBundles,
+            IReadOnlyDictionary<string, bool> allUsedBundleDic)
+        {
+            var files = Directory.GetFiles(rootPath);
+
+            foreach (var fullPath in files)
+            {
+                var bundleName = CommonUtil.GetRelativePathToStreamingAssets(fullPath);
+                allUsedBundleDic.TryGetValue(bundleName, out var result);
+                if (!result)
+                {
+                    unusedBundles.Add(bundleName);
+                }
+            }
+
+            var subDirectories = Directory.GetDirectories(rootPath);
+
+            foreach (var directory in subDirectories)
+            {
+                TraverseStreamingAssets(directory, unusedBundles, allUsedBundleDic);
+            }
         }
 
         # endregion

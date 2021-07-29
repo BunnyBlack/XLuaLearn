@@ -1,11 +1,11 @@
 <file_index>
-  <file name="github" bundle_name="Data/Audio" />
-  <file name="py" bundle_name="Data/Effect" />
-  <file name="Game" bundle_name="Scenes" />
-  <file name="android" bundle_name="Data/Model/android" />
-  <file name="cat" bundle_name="Data/Model/cat" />
-  <file name="cs" bundle_name="Data/Model/cs" />
-  <file name="doge" bundle_name="Data/Model/doge" />
-  <file name="Image" bundle_name="Data/UI/Image" />
-  <file name="Text" bundle_name="Data/UI/Text" />
+  <file name="github" bundle_name="data/audio" />
+  <file name="py" bundle_name="data/effect" />
+  <file name="game" bundle_name="scenes" />
+  <file name="android" bundle_name="data/model/android" />
+  <file name="cat" bundle_name="data/model/cat" />
+  <file name="cs" bundle_name="data/model/cs" />
+  <file name="doge" bundle_name="data/model/doge" />
+  <file name="image" bundle_name="data/ui/image" />
+  <file name="text" bundle_name="data/ui/text" />
 </file_index>

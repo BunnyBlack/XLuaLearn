@@ -60,5 +60,20 @@ namespace CommonCs
         {
             return string.IsNullOrEmpty(path) ? string.Empty : path.Trim().Replace("\\", "/");
         }
+
+        /// <summary>
+        /// 获取相对于StreamingAssets的路径
+        /// </summary>
+        /// <param name="path">任意路径</param>
+        /// <returns>相对于StreamingAssets的路径</returns>
+        public static string GetRelativePathToStreamingAssets(string path)
+        {
+            var index = path.IndexOf("StreamingAssets", StringComparison.Ordinal);
+            if (index != -1)
+                return path.Substring(index + 16);
+
+            Debug.LogError("不在StreamingAssets路径下！");
+            return path;
+        }
     }
 }

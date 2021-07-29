@@ -1,5 +1,5 @@
 <bundle_dependency>
-  <bundle name="Data/UI/Text">
-    <dependency name="Data/UI/Image" />
+  <bundle name="data/ui/text">
+    <dependency name="data/ui/image" />
   </bundle>
 </bundle_dependency>
