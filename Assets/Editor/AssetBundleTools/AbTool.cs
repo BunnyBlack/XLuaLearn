@@ -283,7 +283,7 @@ namespace Editor.AssetBundleTools
         private static void GenerateBundleDependencyConfig()
         {
             // 建立包与依赖包关系配置
-            var xmlPath = Global.BundleOutputPath + "/bundleDependency.xml";
+            var xmlPath = Global.BundleDependencyConfigPath;
             var xmlDoc = new XmlDocument();
             var root = xmlDoc.CreateElement("bundle_dependency");
             xmlDoc.AppendChild(root);
@@ -311,7 +311,7 @@ namespace Editor.AssetBundleTools
         private static void GenerateFileIndexConfig()
         {
             // 建立文件与包名之间的关联配置
-            var xmlPath = Global.BundleOutputPath + "/fileIndex.xml";
+            var xmlPath = Global.FileIndexConfigPath;
             var xmlDoc = new XmlDocument();
             var root = xmlDoc.CreateElement("file_index");
             xmlDoc.AppendChild(root);
