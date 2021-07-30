@@ -92,7 +92,7 @@ namespace Editor.AssetBundleTools
 
             GenerateBundleDependencyConfig();
             GenerateFileIndexConfig();
-            ClearUnusedBundle();
+            ClearUnusedBundle(assetBundleBuildList);
             AssetDatabase.Refresh();
             Debug.Log("打ab包");
         }
@@ -331,25 +331,34 @@ namespace Editor.AssetBundleTools
             xmlDoc.Save(xmlPath);
         }
 
-        private static void ClearUnusedBundle()
+        private static void ClearUnusedBundle(IEnumerable<AssetBundleBuild> assetBundleBuildList)
         {
-            var allUsedBundleNames = AssetDatabase.GetAllAssetBundleNames();
-            var unusedBundles = new List<string>();
-            var allUsedBundleDic = allUsedBundleNames.ToDictionary(usedBundleName => usedBundleName, usedBundleName => true);
+            var allUsedBundleDic = assetBundleBuildList.Select(assetBundleBuild => assetBundleBuild.assetBundleName)
+                .ToDictionary(bundleName => bundleName, bundleName => true);
 
-            TraverseStreamingAssets(Global.BundleOutputPath, unusedBundles, allUsedBundleDic);
+            TraverseStreamingAssets(Global.BundleOutputPath, allUsedBundleDic);
+        }
 
-            foreach (var unusedBundle in unusedBundles)
+        private static void TraverseStreamingAssets(string rootPath, IReadOnlyDictionary<string, bool> allUsedBundleDic)
+        {
+            var files = Directory.GetFiles(rootPath);
+
+            foreach (var fullPath in files)
             {
-                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(unusedBundle);
-                var unusedBundleMeta = fileNameWithoutExtension + ".meta";
-                var unusedBundleManifest = fileNameWithoutExtension + ".manifest";
-                var unusedBundleManifestMeta = fileNameWithoutExtension + ".manifest.meta";
+                if (fullPath.EndsWith(".meta") || fullPath.EndsWith(".xml") || fullPath.EndsWith(".manifest") || fullPath.EndsWith("StreamingAssets"))
+                    continue;
 
-                if (File.Exists(unusedBundle))
-                {
-                    File.Delete(unusedBundle);
-                }
+                var bundleName = CommonUtil.GetRelativePathToStreamingAssets(CommonUtil.GetStandardPath(fullPath));
+                allUsedBundleDic.TryGetValue(bundleName, out var result);
+                if (result)
+                    continue;
+
+                File.Delete(fullPath);
+
+                var unusedBundleMeta = Path.ChangeExtension(fullPath, "meta");
+                var unusedBundleManifest = Path.ChangeExtension(fullPath, "manifest");
+                var unusedBundleManifestMeta = Path.ChangeExtension(fullPath, ".manifest.meta");
+
                 if (File.Exists(unusedBundleMeta))
                 {
                     File.Delete(unusedBundleMeta);
@@ -363,29 +372,22 @@ namespace Editor.AssetBundleTools
                     File.Delete(unusedBundleManifestMeta);
                 }
             }
-        }
-
-        private static void TraverseStreamingAssets(string rootPath, List<string> unusedBundles,
-            IReadOnlyDictionary<string, bool> allUsedBundleDic)
-        {
-            var files = Directory.GetFiles(rootPath);
-
-            foreach (var fullPath in files)
-            {
-                var bundleName = CommonUtil.GetRelativePathToStreamingAssets(fullPath);
-                allUsedBundleDic.TryGetValue(bundleName, out var result);
-                if (!result)
-                {
-                    unusedBundles.Add(bundleName);
-                }
-            }
 
             var subDirectories = Directory.GetDirectories(rootPath);
 
             foreach (var directory in subDirectories)
             {
-                TraverseStreamingAssets(directory, unusedBundles, allUsedBundleDic);
+                TraverseStreamingAssets(directory, allUsedBundleDic);
             }
+
+            var remainingFilesCount = Directory.GetFiles(rootPath).Length;
+            var remainingDirectoriesCount = Directory.GetDirectories(rootPath).Length;
+
+            if (remainingFilesCount != 0 || remainingDirectoriesCount != 0)
+                return;
+
+            Directory.Delete(rootPath);
+            Directory.Delete(rootPath + ".meta");
         }
 
         # endregion

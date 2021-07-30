@@ -9,7 +9,7 @@ namespace Editor
         [MenuItem("test/test", false, 1)]
         private static void Test1()
         {
-            
+            Debug.Log(Path.GetExtension("D:\\Unity Project\\XLuaLearn\\Assets\\StreamingAssets\\fileIndex.xml"));
         }
 
         [MenuItem("test/清空StreamingAssets文件夹", false, 100)]
