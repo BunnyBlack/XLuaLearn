@@ -345,7 +345,8 @@ namespace Editor.AssetBundleTools
 
             foreach (var fullPath in files)
             {
-                if (fullPath.EndsWith(".meta") || fullPath.EndsWith(".xml") || fullPath.EndsWith(".manifest") || fullPath.EndsWith("StreamingAssets"))
+                if (fullPath.EndsWith(".meta") || fullPath.EndsWith(".xml") || fullPath.EndsWith(".manifest") ||
+                    fullPath.EndsWith("StreamingAssets"))
                     continue;
 
                 var bundleName = CommonUtil.GetRelativePathToStreamingAssets(CommonUtil.GetStandardPath(fullPath));
@@ -355,13 +356,18 @@ namespace Editor.AssetBundleTools
 
                 File.Delete(fullPath);
 
-                var unusedBundleMeta = Path.ChangeExtension(fullPath, "meta");
-                var unusedBundleManifest = Path.ChangeExtension(fullPath, "manifest");
-                var unusedBundleManifestMeta = Path.ChangeExtension(fullPath, ".manifest.meta");
+                var unusedBundleMeta = CommonUtil.GetStandardPath(Path.ChangeExtension(fullPath, "meta"));
+                var unusedBundleMeta2 = CommonUtil.GetStandardPath(fullPath + ".meta");
+                var unusedBundleManifest = CommonUtil.GetStandardPath(Path.ChangeExtension(fullPath, "manifest"));
+                var unusedBundleManifestMeta = unusedBundleManifest + ".meta";
 
                 if (File.Exists(unusedBundleMeta))
                 {
                     File.Delete(unusedBundleMeta);
+                }
+                if (File.Exists(unusedBundleMeta2))
+                {
+                    File.Delete(unusedBundleMeta2);
                 }
                 if (File.Exists(unusedBundleManifest))
                 {
@@ -387,7 +393,7 @@ namespace Editor.AssetBundleTools
                 return;
 
             Directory.Delete(rootPath);
-            Directory.Delete(rootPath + ".meta");
+            File.Delete(rootPath + ".meta");
         }
 
         # endregion
