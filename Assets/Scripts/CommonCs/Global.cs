@@ -18,5 +18,14 @@ namespace CommonCs
 
         // 包依赖配置文件的路径
         public static readonly string BundleDependencyConfigPath = BundleOutputPath + "/bundleDependency.xml";
+
+        public static readonly string BundleExtension = ".ab";
+    }
+
+    public enum GameMode
+    {
+        Editor,
+        Bundle,
+        Update
     }
 }

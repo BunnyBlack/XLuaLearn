@@ -1,0 +1,16 @@
+ManifestFileVersion: 0
+CRC: 3603607322
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 71390e4fc44741d33d68bb483cf28ef1
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 7859cd501ea75098bcf7e53f1b477c26
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+Assets:
+- Assets/Data/Effect/py.png
+Dependencies: []

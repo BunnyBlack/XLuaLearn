@@ -33,7 +33,7 @@ namespace CommonCs
             var startIndex = path.IndexOf("Assets", StringComparison.Ordinal);
             if (startIndex == -1)
             {
-                return bundleName.ToLower();
+                return bundleName.ToLower() + Global.BundleExtension;
             }
 
             var lastIndex = path.IndexOf(".", StringComparison.Ordinal);
@@ -48,7 +48,7 @@ namespace CommonCs
                 bundleName = path.Substring(startIndex + 7, len);
             }
 
-            return bundleName.ToLower();
+            return bundleName.ToLower() + Global.BundleExtension;
         }
 
         /// <summary>
