@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace CommonCs
 
         // key -> bundleName  value -> list of dependent bundle      key depend on value
         private readonly Dictionary<string, List<string>> bundleDependencyDic = new Dictionary<string, List<string>>();
-        
+
         public void Init()
         {
             ParseFileIndex();
@@ -71,19 +72,39 @@ namespace CommonCs
 
         private IEnumerator LoadResByNameAsync(string resName, Action<Object> callback = null)
         {
-            fileIndexDic.TryGetValue(resName, out var bundleName);
+            fileIndexDic.TryGetValue(resName.ToLower(), out var bundleName);
             if (string.IsNullOrEmpty(bundleName))
             {
-                Debug.LogError($"试图加载不存在的资源！{resName}");
-                yield break;
+                Debug.LogError($"试图加载不存在的资源: {resName}");
             }
             else
             {
-                
+                var bundlePath = CommonUtil.GetStandardPath(Path.Combine(Global.BundleOutputPath, bundleName));
+                var bundleRequest = AssetBundle.LoadFromFileAsync(bundlePath);
+                yield return bundleRequest;
 
+                var resRequest = bundleRequest.assetBundle.LoadAssetAsync(resName.ToLower());
+                yield return resRequest;
+
+                bundleDependencyDic.TryGetValue(bundleName, out var dependencies);
+                if (dependencies != null)
+                {
+                    foreach (var dependency in dependencies)
+                    {
+                        yield return LoadAssetBundleAsync(dependency);
+                    }
+                }
+
+                callback?.Invoke(resRequest?.asset);
             }
         }
-        
+
+        private IEnumerator LoadAssetBundleAsync(string bundleName)
+        {
+            var bundlePath = CommonUtil.GetStandardPath(Path.Combine(Global.BundleOutputPath, bundleName));
+            var bundleRequest = AssetBundle.LoadFromFileAsync(bundlePath);
+            yield return bundleRequest;
+        }
 
         #endregion
 
