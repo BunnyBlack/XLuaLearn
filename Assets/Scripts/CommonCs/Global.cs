@@ -20,6 +20,8 @@ namespace CommonCs
         public static readonly string BundleDependencyConfigPath = BundleOutputPath + "/bundleDependency.xml";
 
         public static readonly string BundleExtension = ".ab";
+
+        public static GameMode GameMode = GameMode.Editor;
     }
 
     public enum GameMode

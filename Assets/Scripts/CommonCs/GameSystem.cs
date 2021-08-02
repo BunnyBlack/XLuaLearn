@@ -1,16 +1,23 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace CommonCs
 {
     public class GameSystem : MonoBehaviour
     {
         public static GameSystem Inst;
+        public GameMode _mode = GameMode.Editor;
+        public Transform UIRoot { get; set; }
 
-        public static Transform UIRoot;
-        
-        private void Start()
+        private void Awake()
         {
             Inst = this;
+            Global.GameMode = _mode;
+        }
+
+        private void Start()
+        {
             UIRoot = FindObjectOfType<Canvas>().transform;
             ResManager.Inst().Init(gameObject);
             

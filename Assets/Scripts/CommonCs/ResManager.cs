@@ -20,7 +20,7 @@ namespace CommonCs
             _loader = go.AddComponent<ResLoader>();
             _loader.Init();
         }
-        
+
         /// <summary>
         /// 加载资源
         /// </summary>
@@ -30,7 +30,5 @@ namespace CommonCs
         {
             _loader.LoadResByName(resName, callback);
         }
-        
-        
     }
 }
