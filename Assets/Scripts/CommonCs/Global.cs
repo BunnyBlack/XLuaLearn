@@ -19,6 +19,12 @@ namespace CommonCs
         // 包依赖配置文件的路径
         public static readonly string BundleDependencyConfigPath = BundleOutputPath + "/bundleDependency.xml";
 
+        // 可读写的文件夹路径
+        public static readonly string PersistentDataPath = Application.persistentDataPath;
+
+        // ab包下载地址
+        public static readonly string ResourceUrl = "http://127.0.0.1/AssetBundles";
+        
         public static readonly string BundleExtension = ".ab";
 
         public static GameMode GameMode = GameMode.Editor;

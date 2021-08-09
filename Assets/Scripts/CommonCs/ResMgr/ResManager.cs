@@ -2,13 +2,13 @@
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace CommonCs
+namespace CommonCs.ResMgr
 {
     public class ResManager
     {
         private static ResManager _inst;
 
-        private static ResLoader _loader;
+        private ResLoader loader;
 
         public static ResManager Inst()
         {
@@ -17,8 +17,8 @@ namespace CommonCs
 
         public void Init(GameObject go)
         {
-            _loader = go.AddComponent<ResLoader>();
-            _loader.Init();
+            loader = go.AddComponent<ResLoader>();
+            loader.Init();
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace CommonCs
         /// <param name="callback">回调函数</param>
         public void LoadResByName(string resName, Action<Object> callback)
         {
-            _loader.LoadResByName(resName, callback);
+            loader.LoadResByName(resName, callback);
         }
     }
 }

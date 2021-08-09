@@ -1,6 +1,6 @@
-﻿using System;
+﻿using CommonCs.ResDownloader;
+using CommonCs.ResMgr;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace CommonCs
 {
@@ -18,13 +18,14 @@ namespace CommonCs
 
         private void Start()
         {
+            HotFixManager.Inst().Init(gameObject);
             UIRoot = FindObjectOfType<Canvas>().transform;
             ResManager.Inst().Init(gameObject);
-            
+
             TestLoad();
         }
-        
-        
+
+
         private void TestLoad()
         {
             ResManager.Inst().LoadResByName("Text", OnTestComplete);
@@ -37,9 +38,8 @@ namespace CommonCs
             {
                 go.transform.SetParent(UIRoot);
                 go.transform.localPosition = Vector3.zero;
-                
+
             }
         }
-
     }
 }

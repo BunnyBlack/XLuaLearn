@@ -8,7 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace CommonCs
+namespace CommonCs.ResMgr
 {
     public class ResLoader : MonoBehaviour
     {
