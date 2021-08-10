@@ -1,8 +1,7 @@
 ﻿using System;
-using System.IO;
 using UnityEngine;
 
-namespace CommonCs
+namespace CommonCs.Utils
 {
     public static class CommonUtil
     {

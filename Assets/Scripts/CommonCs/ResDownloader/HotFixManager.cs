@@ -15,7 +15,7 @@ namespace CommonCs.ResDownloader
 
         public void Init(GameObject go)
         {
-            go.AddComponent<HotFixHelper>();
+            helper = go.AddComponent<HotFixHelper>();
             helper.Init();
         }
         

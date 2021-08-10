@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -46,10 +47,10 @@ namespace CommonCs.ResDownloader
             onAllComplete?.Invoke();
         }
 
-
         public void Init()
         {
             
         }
+        
     }
 }
