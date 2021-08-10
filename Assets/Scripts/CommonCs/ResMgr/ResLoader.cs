@@ -57,8 +57,6 @@ namespace CommonCs.ResMgr
         }
 
 
-
-
         # region private
 
         private void ParseFileIndex()
@@ -198,9 +196,11 @@ namespace CommonCs.ResMgr
                 TraverseDirectory(directory, sourceDic);
             }
         }
-        
+
         private void EditorLoadAssetByName(string resName, Action<Object> callback)
         {
+#if UNITY_EDITOR
+
             allAssetDic.TryGetValue(resName, out var fullPath);
             if (string.IsNullOrEmpty(fullPath))
             {
@@ -211,8 +211,10 @@ namespace CommonCs.ResMgr
             {
                 Debug.LogError($"不存在的资源路径：{fullPath}");
             }
-
             callback?.Invoke(obj);
+#endif
+
+
         }
 
         #endregion

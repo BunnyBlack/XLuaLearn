@@ -14,13 +14,14 @@ namespace CommonCs.Utils
         /// <param name="data">写入数据的字节流</param>
         public static void WriteFileToPath(string dirPath, string filename, byte[] data)
         {
-            var standardPath = CommonUtil.GetStandardPath(dirPath);
-            if (!Directory.Exists(standardPath))
+            var fullPath = CommonUtil.GetStandardPath(Path.Combine(dirPath, filename));
+            // 由于bundle名称可能还带了路径，所以我们要再解一次directoryName
+            var finalDirName = CommonUtil.GetStandardPath(Path.GetDirectoryName(fullPath));
+            if (!Directory.Exists(finalDirName))
             {
-                Directory.CreateDirectory(standardPath);
+                Directory.CreateDirectory(finalDirName);
             }
-
-            var fullPath = CommonUtil.GetStandardPath(Path.Combine(standardPath, filename));
+            
             if (File.Exists(fullPath))
             {
                 File.Delete(fullPath);

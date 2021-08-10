@@ -17,7 +17,7 @@ namespace CommonCs
         public static readonly string FileIndexConfigPath = BundleOutputPath + "/fileIndex.xml";
 
         // 包依赖配置文件的路径
-        public static readonly string BundleDependencyConfigPath = BundleOutputPath + "/bundleDependency.xml";
+        public static readonly string BundleDependencyConfigPath = BundleOutputPath + "/bundleDependencies.xml";
 
         // 可读写的文件夹路径
         public static readonly string PersistentDataPath = Application.persistentDataPath;
