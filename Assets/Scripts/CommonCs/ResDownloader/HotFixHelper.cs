@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml;
+using CommonCs.Utils;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -25,7 +27,7 @@ namespace CommonCs.ResDownloader
                 Debug.LogError($"下载文件出错：{info.URL}");
                 yield break;
             }
-            
+
             info.Handler = webRequest.downloadHandler;
             onComplete?.Invoke(info);
             webRequest.Dispose();
@@ -38,7 +40,8 @@ namespace CommonCs.ResDownloader
         /// <param name="onComplete">完成一个下载的回调</param>
         /// <param name="onAllComplete">完成所有下载的回调</param>
         /// <returns></returns>
-        public IEnumerator DownloadAllFile(List<DownloadFileInfo> infos, Action<DownloadFileInfo> onComplete, Action onAllComplete)
+        public IEnumerator DownloadAllFile(List<DownloadFileInfo> infos, Action<DownloadFileInfo> onComplete,
+            Action onAllComplete)
         {
             foreach (var downloadFileInfo in infos)
             {
@@ -47,10 +50,20 @@ namespace CommonCs.ResDownloader
             onAllComplete?.Invoke();
         }
 
-        public void Init()
+        public void ReleaseStreamingAssets()
         {
-            
+
         }
-        
+
+        public bool IsFirstInstall()
+        {
+            var versionFilePath = CommonUtil.GetStandardPath(Path.Combine(Global.PersistentDataPath, "fileIndex.xml"));
+            return File.Exists(versionFilePath);
+        }
+
+        public void CheckUpdate()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -16,7 +16,12 @@ namespace CommonCs.ResDownloader
         public void Init(GameObject go)
         {
             helper = go.AddComponent<HotFixHelper>();
-            helper.Init();
+            if (helper.IsFirstInstall())
+            {
+                helper.ReleaseStreamingAssets();
+            }
+            
+            helper.CheckUpdate();
         }
         
         
