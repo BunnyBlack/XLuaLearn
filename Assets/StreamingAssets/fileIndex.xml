@@ -1,4 +1,4 @@
-<file_index>
+<file_index version="1">
   <file name="github" bundle_name="data/audio.ab" />
   <file name="py" bundle_name="data/effect.ab" />
   <file name="game" bundle_name="scenes.ab" />
