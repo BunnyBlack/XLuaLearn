@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using CommonCs.Utils;
+using UnityEngine;
 
 namespace CommonCs
 {
@@ -18,15 +20,22 @@ namespace CommonCs
 
         // 包依赖配置的文件名称
         public static readonly string BundleDependenciesName = "bundleDependencies.xml";
-        
+
         // 文件索引配置文件的路径
         public static readonly string FileIndexConfigPath = $"{BundleOutputPath}/{FileIndexName}";
 
         // 包依赖配置文件的路径
-        public static readonly string BundleDependencyConfigPath =$"{BundleOutputPath}/{BundleDependenciesName}";
+        public static readonly string BundleDependencyConfigPath = $"{BundleOutputPath}/{BundleDependenciesName}";
 
         // 可读写的文件夹路径
         public static readonly string PersistentDataPath = Application.persistentDataPath;
+
+        // ab包导出路径
+        public static readonly string ExportBundlePath =
+            CommonUtil.GetStandardPath(Path.GetDirectoryName(RootPath)) + "/Output";
+        
+        // 需要上传服务器的文件夹地址
+        public static readonly string ReleasePath = CommonUtil.GetStandardPath(Path.GetDirectoryName(RootPath)) + "/Release";
 
         // ab包下载地址
         public static readonly string ResourceUrl = "http://127.0.0.1/AssetBundles";

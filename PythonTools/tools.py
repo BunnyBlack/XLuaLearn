@@ -12,10 +12,12 @@ import sys
 import bundle_compressor as compressor
 
 
-def generate_version_bundles(source_path: str, dest_path: str):
-    if not os.path.exists(dest_path):
-        os.mkdir(dest_path)
-    compressor.generate_version_bundles(source_path, dest_path)
+def generate_version_bundles(source_path: str, output_path: str, release_path: str):
+    if not os.path.exists(output_path):
+        os.mkdir(output_path)
+    if not os.path.exists(release_path):
+        os.mkdir(release_path)
+    compressor.generate_version_bundles(source_path, output_path, release_path)
 
 
 if __name__ == "__main__":

@@ -51,15 +51,15 @@ def copy_file_to_output_dir(source_path: str, dest_path: str):
     print("File Copy Complete!")
 
 
-def compress_files(dest_path: str):
+def compress_files(dest_path: str, release_path: str):
     zipName = "OriginBundle_ver{1}".format(dest_path, current_version)
     shutil.make_archive(base_name="{0}/{1}".format(os.getcwd(), zipName), root_dir=dest_path, format="zip")
-    if os.path.exists("{0}/{1}.zip".format(dest_path, zipName)):
-        os.remove("{0}/{1}.zip".format(dest_path, zipName))
-    shutil.move("{0}/{1}.zip".format(os.getcwd(), zipName), dest_path)
+    if os.path.exists("{0}/{1}.zip".format(release_path, zipName)):
+        os.remove("{0}/{1}.zip".format(release_path, zipName))
+    shutil.move("{0}/{1}.zip".format(os.getcwd(), zipName), release_path)
 
 
-def generate_all_bundles_md5(dest_path: str):
+def generate_all_bundles_md5(dest_path: str, release_path: str):
     doc = xml_doc.Document()
     root: xml_doc.Element = doc.createElement("root")
     doc.appendChild(root)
@@ -74,13 +74,13 @@ def generate_all_bundles_md5(dest_path: str):
             result = m.hexdigest()
             node.setAttribute("md5", result)
         root.appendChild(node)
-    with open("{0}/MD5_ver{1}.xml".format(dest_path, current_version), "w+") as xml_file:
+    with open("{0}/MD5_ver{1}.xml".format(release_path, current_version), "w+") as xml_file:
         doc.writexml(xml_file, indent='', addindent='\t', newl='\n', encoding='UTF-8')
     print("generate md5")
 
 
-def generate_version_bundles(source_path: str, dest_path: str):
+def generate_version_bundles(source_path: str, dest_path: str, release_path: str):
     parse_file_index(source_path)
     copy_file_to_output_dir(source_path, dest_path)
-    compress_files(dest_path)
-    generate_all_bundles_md5(dest_path)
+    compress_files(dest_path, release_path)
+    generate_all_bundles_md5(dest_path, release_path)
