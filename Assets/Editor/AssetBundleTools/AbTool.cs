@@ -315,6 +315,7 @@ namespace Editor.AssetBundleTools
             var xmlPath = Global.FileIndexConfigPath;
             var xmlDoc = new XmlDocument();
             var root = xmlDoc.CreateElement("file_index");
+            root.SetAttribute("version", Global.CurrentVersion.ToString());
             xmlDoc.AppendChild(root);
 
             foreach (var pair in PackagedBundleDic)
