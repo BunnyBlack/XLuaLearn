@@ -13,11 +13,17 @@ namespace CommonCs
         // ab包输出路径
         public static readonly string BundleOutputPath = Application.streamingAssetsPath;
 
+        // 全文件索引配置的文件名称
+        public static readonly string FileIndexName = "fileIndex.xml";
+
+        // 包依赖配置的文件名称
+        public static readonly string BundleDependenciesName = "bundleDependencies.xml";
+        
         // 文件索引配置文件的路径
-        public static readonly string FileIndexConfigPath = BundleOutputPath + "/fileIndex.xml";
+        public static readonly string FileIndexConfigPath = $"{BundleOutputPath}/{FileIndexName}";
 
         // 包依赖配置文件的路径
-        public static readonly string BundleDependencyConfigPath = BundleOutputPath + "/bundleDependencies.xml";
+        public static readonly string BundleDependencyConfigPath =$"{BundleOutputPath}/{BundleDependenciesName}";
 
         // 可读写的文件夹路径
         public static readonly string PersistentDataPath = Application.persistentDataPath;

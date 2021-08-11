@@ -23,7 +23,5 @@ namespace CommonCs.ResDownloader
             
             helper.CheckUpdate();
         }
-        
-        
     }
 }

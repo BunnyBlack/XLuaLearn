@@ -88,12 +88,11 @@ namespace CommonCs.ResDownloader
             }
             
             // 单独再塞一个bundleDependencies.xml文件进去
-            var configName = "bundleDependencies.xml";
-            var configPath = CommonUtil.GetStandardPath(Path.Combine(Global.BundleOutputPath, configName));
+            var configPath = Global.BundleDependencyConfigPath;
             var downloadInfo = new DownloadInfo
             {
                 URL = configPath,
-                FileName = configName
+                FileName = Global.BundleDependenciesName
             };
             downloadInfoList.Add(downloadInfo);
 
@@ -114,13 +113,13 @@ namespace CommonCs.ResDownloader
         {
             // 全部文件释放完毕后，把fileIndex文件和bundleDependencies文件释放出来
             var dirPath = Global.PersistentDataPath;
-            FileUtil.WriteFileToPath(dirPath, "fileIndex.xml", localFileIndexData);
+            FileUtil.WriteFileToPath(dirPath, Global.FileIndexName, localFileIndexData);
         }
         
 
         public bool IsFirstInstall()
         {
-            var versionFilePath = CommonUtil.GetStandardPath(Path.Combine(Global.PersistentDataPath, "fileIndex.xml"));
+            var versionFilePath = CommonUtil.GetStandardPath(Path.Combine(Global.PersistentDataPath, Global.FileIndexName));
             return !File.Exists(versionFilePath);
         }
 
