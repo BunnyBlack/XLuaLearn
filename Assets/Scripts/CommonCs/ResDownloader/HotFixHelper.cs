@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Xml;
 using CommonCs.Utils;
 using UnityEngine;
 using UnityEngine.Networking;
+using Debug = UnityEngine.Debug;
 
 namespace CommonCs.ResDownloader
 {
     public class HotFixHelper : MonoBehaviour
     {
         private byte[] localFileIndexData;
+        private readonly List<string> releasedFileNames = new List<string>();
+        
 
         /// <summary>
         /// 异步下载单个bundle文件 可以是web服务器上的也可以是本地的
@@ -60,7 +65,7 @@ namespace CommonCs.ResDownloader
             {
                 URL = localFileIndexPath
             };
-
+            
             StartCoroutine(DownloadFile(localFileIndexDownloadInfo, OnReleaseFileIndexComplete));
         }
 
@@ -78,6 +83,10 @@ namespace CommonCs.ResDownloader
             foreach (XmlElement element in elements)
             {
                 var bundleName = element.GetAttribute("bundle_name");
+                if (releasedFileNames.Contains(bundleName))
+                {
+                    continue;
+                }
                 var bundlePath = CommonUtil.GetStandardPath(Path.Combine(Global.BundleOutputPath, bundleName));
                 var bundleDownloadInfo = new DownloadInfo
                 {
@@ -85,8 +94,11 @@ namespace CommonCs.ResDownloader
                     FileName = bundleName
                 };
                 downloadInfoList.Add(bundleDownloadInfo);
+                releasedFileNames.Add(bundleName);
             }
             
+            releasedFileNames.Clear();
+
             // 单独再塞一个bundleDependencies.xml文件进去
             var configPath = Global.BundleDependencyConfigPath;
             var downloadInfo = new DownloadInfo
@@ -115,7 +127,7 @@ namespace CommonCs.ResDownloader
             var dirPath = Global.PersistentDataPath;
             FileUtil.WriteFileToPath(dirPath, Global.FileIndexName, localFileIndexData);
         }
-        
+
 
         public bool IsFirstInstall()
         {
