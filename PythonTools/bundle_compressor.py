@@ -79,8 +79,8 @@ def generate_all_bundles_md5(dest_path: str, release_path: str):
     print("generate md5")
 
 
-def generate_version_bundles(source_path: str, dest_path: str, release_path: str):
+def generate_version_bundles(source_path: str, output_path: str, release_path: str):
     parse_file_index(source_path)
-    copy_file_to_output_dir(source_path, dest_path)
-    compress_files(dest_path, release_path)
-    generate_all_bundles_md5(dest_path, release_path)
+    copy_file_to_output_dir(source_path, output_path)
+    compress_files(output_path, release_path)
+    generate_all_bundles_md5(output_path, release_path)
