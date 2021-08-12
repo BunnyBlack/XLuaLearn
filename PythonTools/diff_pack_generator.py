@@ -56,7 +56,6 @@ def do_generate_diff_pack(current_version: int, output_path: str, release_path: 
             pass
         else:
             print("No diff between {0} and {1}".format(version, current_version))
-    pass
 
 
 def generate_diff_pack(current_version: int, output_path: str, release_path: str):
