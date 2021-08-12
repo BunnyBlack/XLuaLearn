@@ -52,9 +52,10 @@ def do_generate_diff_pack(current_version: int, output_path: str, release_path: 
             if os.path.exists("{0}/{1}".format(release_path, zipName)):
                 os.remove("{0}/{1}".format(release_path, zipName))
             shutil.move(zipName, release_path)
+            print("Generate {0}".format(zipName))
             pass
         else:
-            print("版本{0}与版本{1}没有差异".format(version, current_version))
+            print("No diff between {0} and {1}".format(version, current_version))
     pass
 
 

@@ -39,7 +39,13 @@ namespace Editor.AssetBundleTools
             var command = $"\"{ToolPath}\" \"generate_version_bundles('{Global.BundleOutputPath}', '{Global.ExportBundlePath}', '{Global.ReleasePath}')\"";
             DoPythonFunction(command);
         }
-        
+
+        [MenuItem("Python工具/生成差异包")]
+        public static void GenerateDiffPack()
+        {
+            var command = $"\"{ToolPath}\" \"generate_diff_pack({Global.BuildVersion.ToString()}, '{Global.ExportBundlePath}', '{Global.ReleasePath}')\"";
+            DoPythonFunction(command);
+        }
 
         # region private
 
