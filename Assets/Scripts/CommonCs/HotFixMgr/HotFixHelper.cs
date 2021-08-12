@@ -203,6 +203,7 @@ namespace CommonCs.HotFixMgr
         {
             if (info.Handler == null)
             {
+                Debug.LogError($"未下载到{serverVersion}版本的整包！");
                 return;
             }
             FileUtil.WriteFileToPath(Global.PersistentDataPath, info.FileName, info.Handler.data);
