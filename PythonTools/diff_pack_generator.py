@@ -31,7 +31,10 @@ def parse_version_md5(current_version: int, release_path: str, dic: dict):
 
 def do_generate_diff_pack(current_version: int, output_path: str, release_path: str):
     global version_span
-    for version in range(current_version - version_span, current_version):
+    start_version = current_version - version_span
+    if start_version <= 0:
+        start_version = 1
+    for version in range(start_version, current_version):
         version_md5_dic = {}
         parse_version_md5(version, release_path, version_md5_dic)
         diff_list = []
