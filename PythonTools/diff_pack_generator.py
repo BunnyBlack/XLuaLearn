@@ -60,6 +60,5 @@ def do_generate_diff_pack(current_version: int, output_path: str, release_path: 
 
 
 def generate_diff_pack(current_version: int, output_path: str, release_path: str):
-    # 因为md5文件最终都是扔到release文件夹中，所以读取配置也是在release文件夹中
     parse_version_md5(current_version, release_path, current_md5_dic)
     do_generate_diff_pack(current_version, output_path, release_path)
