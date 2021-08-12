@@ -45,8 +45,8 @@ namespace CommonCs
         // 更新模式（暂时不完善）
         public static GameMode GameMode = GameMode.Editor;
 
-        // 版本号 先从简单的考虑直接int型递增
-        public static readonly int CurrentVersion = 3;
+        // 打包用版本号 先从简单的考虑直接int型递增 本地的真实版本号是由持久化目录中的fileIndex的版本号决定
+        public static readonly int BuildVersion = 3;
     }
 
     public enum GameMode

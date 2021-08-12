@@ -134,10 +134,17 @@ namespace CommonCs.ResDownloader
             var versionFilePath = CommonUtil.GetStandardPath(Path.Combine(Global.PersistentDataPath, Global.FileIndexName));
             return !File.Exists(versionFilePath);
         }
+        public bool IsWholePackageMode()
+        {
+            // 整包模式
+            return File.Exists(Global.FileIndexConfigPath);
+        }
 
         public void CheckUpdate()
         {
 
         }
+
+
     }
 }

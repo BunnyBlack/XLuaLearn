@@ -21,8 +21,8 @@ def generate_version_bundles(source_path: str, output_path: str, release_path: s
     compressor.generate_version_bundles(source_path, output_path, release_path)
 
 
-def generate_diff_pack(current_version: int, source_path: str, output_path: str):
-    diff_pack_generator.generate_diff_pack(current_version, source_path, output_path)
+def generate_diff_pack(current_version: int, output_path: str, release_path: str):
+    diff_pack_generator.generate_diff_pack(current_version, output_path, release_path)
 
 
 if __name__ == "__main__":
