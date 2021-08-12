@@ -92,7 +92,7 @@ namespace Editor.AssetBundleTools
         }
         
         /// <summary>
-        /// 传入命令行语句来执行tools.py中的方法
+        /// 传入命令行语句来执行Python的方法
         /// </summary>
         /// <param name="command"></param>
         private static void DoPythonFunction(string command)
