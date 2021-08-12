@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<file bundle_name="data/audio.ab" md5="a8501a177c73b186293750dad3b1ed45"/>
+	<file bundle_name="data/effect.ab" md5="60ffd9b8f3fb9ddbc7f5503ef732ca34"/>
+	<file bundle_name="scenes.ab" md5="50a227528ab35c6f1f64de5caf36506a"/>
+	<file bundle_name="data/model/android.ab" md5="75b097f5ddaa1483fcbe84b7a53cda43"/>
+	<file bundle_name="data/model/cat.ab" md5="d8055ef153c07e5fe5712e49561f2fd4"/>
+	<file bundle_name="data/model/cs.ab" md5="7bc9c1a507b5f5634a1d67b8fedac289"/>
+	<file bundle_name="data/model/doge.ab" md5="7b0a9a6f97f28d2e20cd3702a6342601"/>
+	<file bundle_name="data/ui/button.ab" md5="c439ae0084c256b757cf8fb28c742dcf"/>
+	<file bundle_name="data/ui/image.ab" md5="7f471796fd3d02e803b5a112253155e3"/>
+	<file bundle_name="data/ui/text.ab" md5="501770a4c92febf91a0fe985a4a4ef0c"/>
+</root>

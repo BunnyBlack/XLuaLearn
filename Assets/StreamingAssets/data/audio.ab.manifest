@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2906839225
+CRC: 1748253408
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: d391e689bfbd9d25695e01da5c436d9b
+    Hash: c0191b79f81d026d516ae839cc156ca5
   TypeTreeHash:
     serializedVersion: 2
     Hash: 7859cd501ea75098bcf7e53f1b477c26
@@ -12,5 +12,6 @@ ClassTypes:
 - Class: 28
   Script: {instanceID: 0}
 Assets:
+- Assets/Data/Audio/lua.png
 - Assets/Data/Audio/github.jpg
 Dependencies: []

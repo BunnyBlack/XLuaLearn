@@ -25,7 +25,8 @@ def parse_file_index(source_path: str):
     file_config: xml_doc.Element
     for file_config in file_configs:
         bundle_name = file_config.getAttribute("bundle_name")
-        bundle_list.append(bundle_name)
+        if bundle_name not in bundle_list:
+            bundle_list.append(bundle_name)
 
 
 def copy_file_to_output_dir(source_path: str, dest_path: str):

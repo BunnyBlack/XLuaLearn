@@ -46,7 +46,7 @@ namespace CommonCs
         public static GameMode GameMode = GameMode.Editor;
 
         // 版本号 先从简单的考虑直接int型递增
-        public static readonly int CurrentVersion = 1;
+        public static readonly int CurrentVersion = 3;
     }
 
     public enum GameMode
