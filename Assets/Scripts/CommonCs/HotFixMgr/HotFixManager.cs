@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CommonCs.ResDownloader
+namespace CommonCs.HotFixMgr
 {
     public class HotFixManager
     {
@@ -20,8 +20,10 @@ namespace CommonCs.ResDownloader
             {
                 helper.ReleaseStreamingAssets();
             }
-            
-            helper.CheckUpdate();
+            else
+            {
+                helper.CheckUpdate();
+            }
         }
     }
 }

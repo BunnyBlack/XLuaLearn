@@ -102,7 +102,7 @@ namespace CommonCs.ResMgr
             }
             else
             {
-                var bundlePath = CommonUtil.GetStandardPath(Path.Combine(Global.BundleOutputPath, bundleName));
+                var bundlePath = CommonUtil.GetStandardPath(Path.Combine(Global.PersistentDataPath, bundleName));
                 var bundleRequest = AssetBundle.LoadFromFileAsync(bundlePath);
                 yield return bundleRequest;
 
@@ -124,7 +124,7 @@ namespace CommonCs.ResMgr
 
         private IEnumerator LoadAssetBundleAsync(string bundleName)
         {
-            var bundlePath = CommonUtil.GetStandardPath(Path.Combine(Global.BundleOutputPath, bundleName));
+            var bundlePath = CommonUtil.GetStandardPath(Path.Combine(Global.PersistentDataPath, bundleName));
             var bundleRequest = AssetBundle.LoadFromFileAsync(bundlePath);
             yield return bundleRequest;
         }

@@ -37,15 +37,19 @@ namespace CommonCs
         // 需要上传服务器的文件夹地址
         public static readonly string ReleasePath = CommonUtil.GetStandardPath(Path.GetDirectoryName(RootPath)) + "/Release";
 
-        // ab包下载地址
-        public static readonly string ResourceUrl = "http://127.0.0.1/AssetBundles";
+        // 更新包下载地址
+        public static readonly string ResourceServerAddress = "http://127.0.0.1/AssetBundles";
+
+        // 服务器最新版本配置文件的名称
+        public static readonly string ServerVersionConfigName = "version_config.txt";
         
+        // ab包后缀名
         public static readonly string BundleExtension = ".ab";
 
         // 更新模式（暂时不完善）
         public static GameMode GameMode = GameMode.Editor;
 
-        // 打包用版本号 先从简单的考虑直接int型递增 本地的真实版本号是由持久化目录中的fileIndex的版本号决定
+        // 打包用版本号 本地的真实版本号是由持久化目录中的fileIndex的版本号决定
         public static readonly int BuildVersion = 3;
     }
 
