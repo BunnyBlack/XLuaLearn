@@ -1,0 +1,13 @@
+<file_index version="3">
+  <file name="github" bundle_name="data/audio.ab" />
+  <file name="lua" bundle_name="data/audio.ab" />
+  <file name="py" bundle_name="data/effect.ab" />
+  <file name="game" bundle_name="scenes.ab" />
+  <file name="android" bundle_name="data/model/android.ab" />
+  <file name="cat" bundle_name="data/model/cat.ab" />
+  <file name="cs" bundle_name="data/model/cs.ab" />
+  <file name="doge" bundle_name="data/model/doge.ab" />
+  <file name="button" bundle_name="data/ui/button.ab" />
+  <file name="image" bundle_name="data/ui/image.ab" />
+  <file name="text" bundle_name="data/ui/text.ab" />
+</file_index>

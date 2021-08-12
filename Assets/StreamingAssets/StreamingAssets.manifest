@@ -1,0 +1,35 @@
+ManifestFileVersion: 0
+CRC: 420334093
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: data/audio.ab
+      Dependencies: {}
+    Info_1:
+      Name: data/effect.ab
+      Dependencies: {}
+    Info_2:
+      Name: scenes.ab
+      Dependencies: {}
+    Info_3:
+      Name: data/model/android.ab
+      Dependencies: {}
+    Info_4:
+      Name: data/model/cat.ab
+      Dependencies: {}
+    Info_5:
+      Name: data/model/cs.ab
+      Dependencies: {}
+    Info_6:
+      Name: data/model/doge.ab
+      Dependencies: {}
+    Info_7:
+      Name: data/ui/button.ab
+      Dependencies: {}
+    Info_8:
+      Name: data/ui/image.ab
+      Dependencies: {}
+    Info_9:
+      Name: data/ui/text.ab
+      Dependencies:
+        Dependency_0: data/ui/image.ab

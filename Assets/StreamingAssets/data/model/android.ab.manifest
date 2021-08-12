@@ -1,0 +1,16 @@
+ManifestFileVersion: 0
+CRC: 674062795
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 4dfc681c7487129a2446695cda7b7b32
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 7859cd501ea75098bcf7e53f1b477c26
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+Assets:
+- Assets/Data/Model/android.png
+Dependencies: []
