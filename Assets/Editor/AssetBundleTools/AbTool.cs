@@ -34,23 +34,23 @@ namespace Editor.AssetBundleTools
             xmlDoc.AppendChild(root);
 
             var audioPath = xmlDoc.CreateElement("item");
-            SetBundleXmlAttribute(audioPath, CommonUtil.GetStandardPath(Global.RootPath + "/Data/Audio"), "dir");
+            SetBundleXmlAttribute(audioPath, CommonUtil.GetStandardPath($"{Global.RootPath}/Data/Audio"), "dir");
             root.AppendChild(audioPath);
 
             var effectPath = xmlDoc.CreateElement("item");
-            SetBundleXmlAttribute(effectPath, CommonUtil.GetStandardPath(Global.RootPath + "/Data/Effect"), "dir");
+            SetBundleXmlAttribute(effectPath, CommonUtil.GetStandardPath($"{Global.RootPath}/Data/Effect"), "dir");
             root.AppendChild(effectPath);
 
             var modelPath = xmlDoc.CreateElement("item");
-            SetBundleXmlAttribute(modelPath, CommonUtil.GetStandardPath(Global.RootPath + "/Data/Model"), "file");
+            SetBundleXmlAttribute(modelPath, CommonUtil.GetStandardPath($"{Global.RootPath}/Data/Model"), "file");
             root.AppendChild(modelPath);
 
             var uiPath = xmlDoc.CreateElement("item");
-            SetBundleXmlAttribute(uiPath, CommonUtil.GetStandardPath(Global.RootPath + "/Data/UI"), "file");
+            SetBundleXmlAttribute(uiPath, CommonUtil.GetStandardPath($"{Global.RootPath}/Data/UI"), "file");
             root.AppendChild(uiPath);
 
             var scenePath = xmlDoc.CreateElement("item");
-            SetBundleXmlAttribute(scenePath, CommonUtil.GetStandardPath(Global.RootPath + "/Scenes"), "dir");
+            SetBundleXmlAttribute(scenePath, CommonUtil.GetStandardPath($"{Global.RootPath}/Scenes"), "dir");
             root.AppendChild(scenePath);
 
             xmlDoc.Save(xmlPath);

@@ -10,7 +10,7 @@ namespace CommonCs
         public static readonly string RootPath = Application.dataPath;
 
         // 打包配置输出路径
-        public static readonly string BundlePathConfigPath = RootPath + "/Editor/AssetBundleTools/bundlePath.xml";
+        public static readonly string BundlePathConfigPath = $"{RootPath}/Editor/AssetBundleTools/bundlePath.xml";
 
         // ab包输出路径
         public static readonly string BundleOutputPath = Application.streamingAssetsPath;
@@ -32,17 +32,17 @@ namespace CommonCs
 
         // ab包导出路径
         public static readonly string ExportBundlePath =
-            CommonUtil.GetStandardPath(Path.GetDirectoryName(RootPath)) + "/Output";
-        
+            $"{CommonUtil.GetStandardPath(Path.GetDirectoryName(RootPath))}/Output";
+
         // 需要上传服务器的文件夹地址
-        public static readonly string ReleasePath = CommonUtil.GetStandardPath(Path.GetDirectoryName(RootPath)) + "/Release";
+        public static readonly string ReleasePath = $"{CommonUtil.GetStandardPath(Path.GetDirectoryName(RootPath))}/Release";
 
         // 更新包下载地址
         public static readonly string ResourceServerAddress = "http://127.0.0.1/AssetBundles";
 
         // 服务器最新版本配置文件的名称
         public static readonly string ServerVersionConfigName = "version_config.txt";
-        
+
         // ab包后缀名
         public static readonly string BundleExtension = ".ab";
 
