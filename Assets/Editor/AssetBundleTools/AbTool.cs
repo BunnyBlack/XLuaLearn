@@ -53,22 +53,6 @@ namespace Editor.AssetBundleTools
             SetBundleXmlAttribute(scenePath, CommonUtil.GetStandardPath(Global.RootPath + "/Scenes"), "dir");
             root.AppendChild(scenePath);
 
-            // var commonCsPath = xmlDoc.CreateElement("item");
-            // SetBundleXmlAttribute(commonCsPath, Global.RootPath + "/Scripts/CommonCs", "dir");
-            // root.AppendChild(commonCsPath);
-            //
-            // var commonLuaPath = xmlDoc.CreateElement("item");
-            // SetBundleXmlAttribute(commonLuaPath, Global.RootPath + "/Scripts/CommonLua", "dir");
-            // root.AppendChild(commonLuaPath);
-            //
-            // var sourceCsPath = xmlDoc.CreateElement("item");
-            // SetBundleXmlAttribute(sourceCsPath, Global.RootPath + "/Scripts/SourceCs", "dir");
-            // root.AppendChild(sourceCsPath);
-            //
-            // var sourceLuaPath = xmlDoc.CreateElement("item");
-            // SetBundleXmlAttribute(sourceLuaPath, Global.RootPath + "/Scripts/SourceLua", "dir");
-            // root.AppendChild(sourceLuaPath);
-
             xmlDoc.Save(xmlPath);
             AssetDatabase.Refresh();
             Debug.Log($"生成打包配置xml: {xmlPath}");
