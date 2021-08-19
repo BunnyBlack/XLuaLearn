@@ -75,7 +75,7 @@ namespace CommonCs.Utils
             return path;
         }
 
-        public static string GetLuaNameWithNameSpace(string path)
+        public static string GetLuaModuleName(string path)
         {
             var scriptName = path;
 

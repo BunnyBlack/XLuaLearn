@@ -287,21 +287,21 @@ namespace Editor.AssetBundleTools
                 if (fullPath.EndsWith(".meta"))
                     continue;
 
-                var filename = CommonUtil.GetLuaNameWithNameSpace(fullPath);
-                if (sourceDic.ContainsKey(filename))
+                var moduleName = CommonUtil.GetLuaModuleName(fullPath);
+                if (sourceDic.ContainsKey(moduleName))
                 {
                     var message = new[]
                     {
                         "包含同名资源!",
-                        $"fileName: {filename}",
-                        $"existing path: {sourceDic[filename]}",
+                        $"fileName: {moduleName}",
+                        $"existing path: {sourceDic[moduleName]}",
                         $"incoming path: {fullPath}"
                     };
                     Debug.LogError(string.Join("\n", message));
                 }
                 else
                 {
-                    sourceDic.Add(filename, fullPath);
+                    sourceDic.Add(moduleName, fullPath);
                 }
             }
         }
@@ -451,7 +451,7 @@ namespace Editor.AssetBundleTools
                 var fullPath = pair.Value;
 
                 var fileNode = xmlDoc.CreateElement("file");
-                fileNode.SetAttribute("name", filename);
+                fileNode.SetAttribute("module_name", filename);
                 fileNode.SetAttribute("path", CommonUtil.GetStandardPath(fullPath));
                 root.AppendChild(fileNode);
             }
