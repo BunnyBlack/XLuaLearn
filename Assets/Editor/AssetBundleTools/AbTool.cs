@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -15,9 +16,15 @@ namespace Editor.AssetBundleTools
         private static readonly List<string> FileTypeConfigList = new List<string>();
         private static readonly List<string> DirTypeConfigList = new List<string>();
 
+        // lua文件路径列表
+        private static readonly List<string> LuaConfigList = new List<string>();
+
         // key -> filename without extension  value -> file fullPath
         private static readonly Dictionary<string, string> FileTypePathDic = new Dictionary<string, string>();
         private static readonly Dictionary<string, string> DirTypePathDic = new Dictionary<string, string>();
+
+        // key -> lua file name   value -> lua file full path
+        private static readonly Dictionary<string, string> LuaPathDic = new Dictionary<string, string>();
 
         // key -> filename without extension  value -> bundle name
         private static readonly Dictionary<string, string> PackagedBundleDic = new Dictionary<string, string>();
@@ -58,7 +65,6 @@ namespace Editor.AssetBundleTools
             Debug.Log($"生成打包配置xml: {xmlPath}");
         }
 
-
         [MenuItem("Tools/打包工具/打ab包")]
         private static void BuildAssetBundles()
         {
@@ -82,6 +88,40 @@ namespace Editor.AssetBundleTools
             Debug.Log("打ab包");
         }
 
+        [MenuItem("Tools/Lua工具/生成Lua文件打包配置xml")]
+        private static void CreateLuaPathConfig()
+        {
+            var xmlPath = Global.LuaPathConfigPath;
+            var xmlDoc = new XmlDocument();
+            var root = xmlDoc.CreateElement("lua_path");
+            xmlDoc.AppendChild(root);
+
+            var commonLuaPath = xmlDoc.CreateElement("item");
+            SetLuaXmlAttribute(commonLuaPath, CommonUtil.GetStandardPath($"{Global.RootPath}/Scripts/CommonLua"));
+            root.AppendChild(commonLuaPath);
+
+            var sourceLuaPath = xmlDoc.CreateElement("item");
+            SetLuaXmlAttribute(sourceLuaPath, CommonUtil.GetStandardPath($"{Global.RootPath}/Scripts/SourceLua"));
+            root.AppendChild(sourceLuaPath);
+
+            xmlDoc.Save(xmlPath);
+            AssetDatabase.Refresh();
+            Debug.Log($"生成Lua文件打包配置xml: {xmlPath}");
+        }
+
+        [MenuItem("Tools/Lua工具/打Lua包")]
+        private static void BuildLuaPack()
+        {
+            CreateStreamingDir();
+
+            ParseLuaConfig();
+            CreateLuaPathDicReferringToConfig();
+
+            GenerateLuaIndexConfig();
+            AssetDatabase.Refresh();
+            Debug.Log("生成lua全文件索引");
+        }
+
 
         # region tools
 
@@ -98,6 +138,11 @@ namespace Editor.AssetBundleTools
         {
             element.SetAttribute("path", path);
             element.SetAttribute("bundle_type", type);
+        }
+
+        private static void SetLuaXmlAttribute(XmlElement element, string path)
+        {
+            element.SetAttribute("path", path);
         }
 
         private static void ParseBundleConfig()
@@ -121,17 +166,39 @@ namespace Editor.AssetBundleTools
                         DirTypeConfigList.Add(path);
                         break;
                     case "dir":
-                        Debug.Log("path为空");
+                        Debug.LogError("path为空");
                         break;
                     case "file" when !string.IsNullOrEmpty(path):
                         FileTypeConfigList.Add(path);
                         break;
                     case "file":
-                        Debug.Log("path为空");
+                        Debug.LogError("path为空");
                         break;
                     default:
-                        Debug.Log($"错误的打包类型：{type}");
+                        Debug.LogError($"错误的打包类型：{type}");
                         break;
+                }
+            }
+        }
+
+        private static void ParseLuaConfig()
+        {
+            LuaConfigList.Clear();
+
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(Global.LuaPathConfigPath);
+
+            var elements = xmlDoc.GetElementsByTagName("item");
+            foreach (XmlElement element in elements)
+            {
+                var path = element.GetAttribute("path");
+                if (string.IsNullOrEmpty(path))
+                {
+                    Debug.LogError("存在空的Lua配置路径!");
+                }
+                else
+                {
+                    LuaConfigList.Add(path);
                 }
             }
         }
@@ -144,16 +211,46 @@ namespace Editor.AssetBundleTools
             // 按文件夹打包的类型也做全文件遍历，用于剔除冗余用
             foreach (var path in DirTypeConfigList)
             {
-                TraverseDirectory(path, DirTypePathDic);
+                TraverseDirectory(path, DirTypePathDic, GenerateFilePathDic);
             }
 
             foreach (var path in FileTypeConfigList)
             {
-                TraverseDirectory(path, FileTypePathDic);
+                TraverseDirectory(path, FileTypePathDic, GenerateFilePathDic);
             }
         }
 
-        private static void TraverseDirectory(string rootPath, IDictionary<string, string> sourceDic)
+        private static void CreateLuaPathDicReferringToConfig()
+        {
+            LuaPathDic.Clear();
+
+            foreach (var path in LuaConfigList)
+            {
+                TraverseDirectory(path, LuaPathDic, GenerateLuaPathDic);
+            }
+        }
+
+        /// <summary>
+        /// 遍历文件夹（树） 可以自己传入访问函数
+        /// </summary>
+        /// <param name="rootPath">遍历起始的根节点</param>
+        /// <param name="sourceDic">用于接收处理结果的字典，不需要可以传null</param>
+        /// <param name="handler">处理当前节点的访问函数</param>
+        public static void TraverseDirectory(string rootPath, IDictionary<string, string> sourceDic,
+            Action<string, IDictionary<string, string>> handler)
+        {
+            // 访问节点
+            handler(rootPath, sourceDic);
+
+            // 遍历子节点
+            var subDirectories = Directory.GetDirectories(rootPath);
+            foreach (var directory in subDirectories)
+            {
+                TraverseDirectory(directory, sourceDic, handler);
+            }
+        }
+
+        private static void GenerateFilePathDic(string rootPath, IDictionary<string, string> sourceDic)
         {
             var files = Directory.GetFiles(rootPath);
 
@@ -179,14 +276,36 @@ namespace Editor.AssetBundleTools
                     sourceDic.Add(filename, fullPath);
                 }
             }
+        }
 
-            var subDirectories = Directory.GetDirectories(rootPath);
+        private static void GenerateLuaPathDic(string rootPath, IDictionary<string, string> sourceDic)
+        {
+            var files = Directory.GetFiles(rootPath);
 
-            foreach (var directory in subDirectories)
+            foreach (var fullPath in files)
             {
-                TraverseDirectory(directory, sourceDic);
+                if (fullPath.EndsWith(".meta"))
+                    continue;
+
+                var filename = CommonUtil.GetLuaNameWithNameSpace(fullPath);
+                if (sourceDic.ContainsKey(filename))
+                {
+                    var message = new[]
+                    {
+                        "包含同名资源!",
+                        $"fileName: {filename}",
+                        $"existing path: {sourceDic[filename]}",
+                        $"incoming path: {fullPath}"
+                    };
+                    Debug.LogError(string.Join("\n", message));
+                }
+                else
+                {
+                    sourceDic.Add(filename, fullPath);
+                }
             }
         }
+
 
         private static void GetBundleBuildConfig(ICollection<AssetBundleBuild> assetBundleBuildList)
         {
@@ -299,7 +418,7 @@ namespace Editor.AssetBundleTools
             var xmlPath = Global.FileIndexConfigPath;
             var xmlDoc = new XmlDocument();
             var root = xmlDoc.CreateElement("file_index");
-            root.SetAttribute("version", Global.BuildVersion.ToString());
+            root.SetAttribute("version", Global.ResVersion.ToString());
             xmlDoc.AppendChild(root);
 
             foreach (var pair in PackagedBundleDic)
@@ -310,6 +429,30 @@ namespace Editor.AssetBundleTools
                 var fileNode = xmlDoc.CreateElement("file");
                 fileNode.SetAttribute("name", filename.ToLower());
                 fileNode.SetAttribute("bundle_name", CommonUtil.GetStandardPath(bundleName).ToLower());
+                root.AppendChild(fileNode);
+            }
+
+
+            xmlDoc.Save(xmlPath);
+        }
+
+        private static void GenerateLuaIndexConfig()
+        {
+            // 建立lua文件名与路径之间的关系
+            var xmlPath = Global.LuaIndexConfigPath;
+            var xmlDoc = new XmlDocument();
+            var root = xmlDoc.CreateElement("lua_index");
+            root.SetAttribute("version", Global.LuaVersion.ToString());
+            xmlDoc.AppendChild(root);
+
+            foreach (var pair in LuaPathDic)
+            {
+                var filename = pair.Key;
+                var fullPath = pair.Value;
+
+                var fileNode = xmlDoc.CreateElement("file");
+                fileNode.SetAttribute("name", filename);
+                fileNode.SetAttribute("path", CommonUtil.GetStandardPath(fullPath));
                 root.AppendChild(fileNode);
             }
 

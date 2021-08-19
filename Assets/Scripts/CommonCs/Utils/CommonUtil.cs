@@ -74,5 +74,30 @@ namespace CommonCs.Utils
             Debug.LogError("不在StreamingAssets路径下！");
             return path;
         }
+
+        public static string GetLuaNameWithNameSpace(string path)
+        {
+            var scriptName = path;
+
+            var startIndex = path.IndexOf("Scripts", StringComparison.Ordinal);
+            if (startIndex == -1)
+            {
+                return scriptName;
+            }
+
+            var lastIndex = path.IndexOf(".", StringComparison.Ordinal);
+            if (lastIndex == -1)
+            {
+                // lua文件可能会没有后缀
+                scriptName = path.Substring(startIndex + 8);
+            }
+            else
+            {
+                var len = lastIndex - (startIndex + 8);
+                scriptName = path.Substring(startIndex + 8, len);
+            }
+
+            return scriptName;
+        }
     }
 }

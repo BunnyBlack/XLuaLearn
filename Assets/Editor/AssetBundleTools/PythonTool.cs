@@ -43,7 +43,7 @@ namespace Editor.AssetBundleTools
         [MenuItem("Python工具/生成差异包")]
         public static void GenerateDiffPack()
         {
-            var command = $"\"{ToolPath}\" \"generate_diff_pack({Global.BuildVersion.ToString()}, '{Global.ExportBundlePath}', '{Global.ReleasePath}')\"";
+            var command = $"\"{ToolPath}\" \"generate_diff_pack({Global.ResVersion.ToString()}, '{Global.ExportBundlePath}', '{Global.ReleasePath}')\"";
             DoPythonFunction(command);
         }
 

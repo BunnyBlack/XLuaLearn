@@ -11,6 +11,9 @@ namespace CommonCs
 
         // 打包配置输出路径
         public static readonly string BundlePathConfigPath = $"{RootPath}/Editor/AssetBundleTools/bundlePath.xml";
+        
+        // 打包配置输出路径
+        public static readonly string LuaPathConfigPath = $"{RootPath}/Editor/AssetBundleTools/luaPath.xml";
 
         // ab包输出路径
         public static readonly string BundleOutputPath = Application.streamingAssetsPath;
@@ -21,11 +24,17 @@ namespace CommonCs
         // 包依赖配置的文件名称
         public static readonly string BundleDependenciesName = "bundleDependencies.xml";
 
+        // lua文件索引配置的文件名称
+        public static readonly string LuaIndexName = "luaIndex.xml";
+
         // 文件索引配置文件的路径
         public static readonly string FileIndexConfigPath = $"{BundleOutputPath}/{FileIndexName}";
 
         // 包依赖配置文件的路径
         public static readonly string BundleDependencyConfigPath = $"{BundleOutputPath}/{BundleDependenciesName}";
+        
+        // lua文件索引配置文件的路径
+        public static readonly string LuaIndexConfigPath = $"{BundleOutputPath}/{LuaIndexName}";
 
         // 可读写的文件夹路径
         public static readonly string PersistentDataPath = Application.persistentDataPath;
@@ -46,11 +55,16 @@ namespace CommonCs
         // ab包后缀名
         public static readonly string BundleExtension = ".ab";
 
+        public static readonly string LuaExtension = ".lua";
+
         // 更新模式（暂时不完善）
         public static GameMode GameMode = GameMode.Editor;
 
-        // 打包用版本号 本地的真实版本号是由持久化目录中的fileIndex的版本号决定
-        public static readonly int BuildVersion = 3;
+        // 打包资源用版本号 本地的真实版本号是由持久化目录中的fileIndex的版本号决定
+        public static readonly int ResVersion = 3;
+
+        // lua版本号
+        public static readonly int LuaVersion = 1;
     }
 
     public enum GameMode
