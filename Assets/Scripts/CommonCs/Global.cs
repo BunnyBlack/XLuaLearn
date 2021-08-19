@@ -40,7 +40,7 @@ namespace CommonCs
         public static readonly string BundleDependencyConfigPath = $"{BundleOutputPath}/{BundleDependenciesName}";
         
         // lua文件索引配置文件的路径
-        public static readonly string LuaIndexConfigPath = $"{ExportLuaPath}/{LuaIndexName}";
+        public static readonly string LuaIndexConfigPath = $"{BundleOutputPath}/{LuaIndexName}";
 
         // 可读写的文件夹路径
         public static readonly string PersistentDataPath = Application.persistentDataPath;
