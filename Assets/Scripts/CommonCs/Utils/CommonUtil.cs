@@ -89,18 +89,8 @@ namespace CommonCs.Utils
             {
                 return scriptName;
             }
-
-            var lastIndex = path.IndexOf(".", StringComparison.Ordinal);
-            if (lastIndex == -1)
-            {
-                // lua文件可能会没有后缀
-                scriptName = path.Substring(startIndex + 8);
-            }
-            else
-            {
-                var len = lastIndex - (startIndex + 8);
-                scriptName = path.Substring(startIndex + 8, len);
-            }
+            
+            scriptName = path.Substring(startIndex + 8);
 
             return scriptName;
         }
@@ -112,8 +102,11 @@ namespace CommonCs.Utils
         /// <returns></returns>
         public static string GetLuaModuleName(string path)
         {
+            // 先去除后缀名
+            var pathWithoutExtension = path.Substring(0, path.IndexOf(".", StringComparison.Ordinal));
+            
             // 将路径的 / 替换为成员访问运算符 .
-            return path.Replace('/', '.');
+            return pathWithoutExtension.Replace('/', '.');
         }
     }
 }

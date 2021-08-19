@@ -47,10 +47,12 @@ namespace Editor.AssetBundleTools
             DoPythonFunction(command);
         }
 
-        [MenuItem("Python工具/导出lua脚本")]
+        [MenuItem("Python工具/导出lua包")]
         public static void ExportLuaScripts()
         {
-            
+            var command = $"\"{ToolPath}\" \"generate_version_lua_pack('{Global.BundleOutputPath}', '{Global.ExportLuaPath}', '{Global.ReleasePath}')\"";
+
+            DoPythonFunction(command);
         }
         
         

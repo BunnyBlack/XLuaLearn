@@ -13,14 +13,14 @@ import xml.dom.minidom as xml_doc
 from hashlib import md5
 
 bundle_list = []
-current_version: str
+current_res_version: str
 
 
 def parse_file_index(source_path: str):
     file_index_full_path: str = source_path + "/fileIndex.xml"
     root: xml_doc.Element = xml_doc.parse(file_index_full_path).documentElement
-    global current_version
-    current_version = root.getAttribute("version")
+    global current_res_version
+    current_res_version = root.getAttribute("version")
     file_configs = root.getElementsByTagName("file")
     file_config: xml_doc.Element
     for file_config in file_configs:
@@ -53,7 +53,7 @@ def copy_file_to_output_dir(source_path: str, dest_path: str):
 
 
 def compress_files(dest_path: str, release_path: str):
-    zipName = "OriginBundle_ver{1}".format(dest_path, current_version)
+    zipName = "OriginBundle_ver{1}".format(dest_path, current_res_version)
     shutil.make_archive(base_name="{0}/{1}".format(os.getcwd(), zipName), root_dir=dest_path, format="zip")
     if os.path.exists("{0}/{1}.zip".format(release_path, zipName)):
         os.remove("{0}/{1}.zip".format(release_path, zipName))
@@ -75,7 +75,7 @@ def generate_all_bundles_md5(dest_path: str, release_path: str):
             result = m.hexdigest()
             node.setAttribute("md5", result)
         root.appendChild(node)
-    with open("{0}/MD5_ver{1}.xml".format(release_path, current_version), "w+") as xml_file:
+    with open("{0}/MD5_ver{1}.xml".format(release_path, current_res_version), "w+") as xml_file:
         doc.writexml(xml_file, indent='', addindent='\t', newl='\n', encoding='UTF-8')
     print("generate md5")
 

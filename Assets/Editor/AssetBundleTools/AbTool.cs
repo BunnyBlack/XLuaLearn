@@ -461,7 +461,7 @@ namespace Editor.AssetBundleTools
 
                 var fileNode = xmlDoc.CreateElement("file");
                 fileNode.SetAttribute("relative_path", filename);
-                fileNode.SetAttribute("fullpath", CommonUtil.GetStandardPath(fullPath));
+                fileNode.SetAttribute("full_path", CommonUtil.GetStandardPath(fullPath));
                 root.AppendChild(fileNode);
             }
 

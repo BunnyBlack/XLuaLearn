@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using CommonCs;
 using CommonCs.Utils;
@@ -12,9 +13,10 @@ namespace Editor
         [MenuItem("test/test", false, 1)]
         private static void Test1()
         {
-            var outputPath = CommonUtil.GetStandardPath(Path.GetDirectoryName(Global.RootPath));
+            const string path = @"D:\Unity Project\XLuaLearn\Assets\Scripts\CommonCs\Global.cs";
 
-            Debug.Log(outputPath);
+            var sub = path.Substring(0, path.IndexOf(".", StringComparison.Ordinal));
+            Debug.Log(sub);
         }
 
         [MenuItem("test/清空StreamingAssets文件夹", false, 100)]
