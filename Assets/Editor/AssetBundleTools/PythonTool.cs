@@ -34,17 +34,30 @@ namespace Editor.AssetBundleTools
         }
 
         [MenuItem("Python工具/导出AB包")]
-        public static void GenerateExportBundles()
+        public static void ExportBundles()
         {
-            var command = $"\"{ToolPath}\" \"generate_version_bundles('{Global.BundleOutputPath}', '{Global.ExportBundlePath}', '{Global.ReleasePath}')\"";
+            var command = $"\"{ToolPath}\" \"generate_version_res_bundles('{Global.BundleOutputPath}', '{Global.ExportBundlePath}', '{Global.ReleasePath}')\"";
             DoPythonFunction(command);
         }
 
-        [MenuItem("Python工具/生成差异包")]
-        public static void GenerateDiffPack()
+        [MenuItem("Python工具/生成资源差异包")]
+        public static void GenerateResDiffPack()
         {
-            var command = $"\"{ToolPath}\" \"generate_diff_pack({Global.ResVersion.ToString()}, '{Global.ExportBundlePath}', '{Global.ReleasePath}')\"";
+            var command = $"\"{ToolPath}\" \"generate_res_diff_pack({Global.ResVersion.ToString()}, '{Global.ExportBundlePath}', '{Global.ReleasePath}')\"";
             DoPythonFunction(command);
+        }
+
+        [MenuItem("Python工具/导出lua脚本")]
+        public static void ExportLuaScripts()
+        {
+            
+        }
+        
+        
+        [MenuItem("Python工具/生成Lua差异包")]
+        public static void GenerateLuaDiffPack()
+        {
+            
         }
 
         # region private

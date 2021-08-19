@@ -2,7 +2,7 @@
 # -*-coding:utf-8 -*-
 
 """
-@File: diff_pack_generator.py
+@File: res_diff_pack_generator.py
 @Author: Yunyi Xu
 @Date: 2021/8/12 10:35
 @Desc: 生成差异包
@@ -61,6 +61,6 @@ def do_generate_diff_pack(current_version: int, output_path: str, release_path: 
             print("No diff between {0} and {1}".format(version, current_version))
 
 
-def generate_diff_pack(current_version: int, output_path: str, release_path: str):
+def generate_res_diff_pack(current_version: int, output_path: str, release_path: str):
     parse_version_md5(current_version, release_path, current_md5_dic)
     do_generate_diff_pack(current_version, output_path, release_path)

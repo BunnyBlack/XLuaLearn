@@ -42,6 +42,9 @@ namespace CommonCs
         // ab包导出路径
         public static readonly string ExportBundlePath =
             $"{CommonUtil.GetStandardPath(Path.GetDirectoryName(RootPath))}/Output";
+        
+        public static readonly string ExportLuaPath = 
+            $"{CommonUtil.GetStandardPath(Path.GetDirectoryName(RootPath))}/LuaScripts";
 
         // 需要上传服务器的文件夹地址
         public static readonly string ReleasePath = $"{CommonUtil.GetStandardPath(Path.GetDirectoryName(RootPath))}/Release";
