@@ -9,6 +9,8 @@ namespace CommonCs
         // 项目根目录
         public static readonly string RootPath = Application.dataPath;
 
+
+        
         // 打包配置输出路径
         public static readonly string BundlePathConfigPath = $"{RootPath}/Editor/AssetBundleTools/bundlePath.xml";
         
@@ -26,6 +28,10 @@ namespace CommonCs
 
         // lua文件索引配置的文件名称
         public static readonly string LuaIndexName = "luaIndex.xml";
+        
+        // 导出lua文件的路径
+        public static readonly string ExportLuaPath = 
+            $"{CommonUtil.GetStandardPath(Path.GetDirectoryName(RootPath))}/LuaScripts";
 
         // 文件索引配置文件的路径
         public static readonly string FileIndexConfigPath = $"{BundleOutputPath}/{FileIndexName}";
@@ -34,7 +40,7 @@ namespace CommonCs
         public static readonly string BundleDependencyConfigPath = $"{BundleOutputPath}/{BundleDependenciesName}";
         
         // lua文件索引配置文件的路径
-        public static readonly string LuaIndexConfigPath = $"{BundleOutputPath}/{LuaIndexName}";
+        public static readonly string LuaIndexConfigPath = $"{ExportLuaPath}/{LuaIndexName}";
 
         // 可读写的文件夹路径
         public static readonly string PersistentDataPath = Application.persistentDataPath;
@@ -43,8 +49,7 @@ namespace CommonCs
         public static readonly string ExportBundlePath =
             $"{CommonUtil.GetStandardPath(Path.GetDirectoryName(RootPath))}/Output";
         
-        public static readonly string ExportLuaPath = 
-            $"{CommonUtil.GetStandardPath(Path.GetDirectoryName(RootPath))}/LuaScripts";
+
 
         // 需要上传服务器的文件夹地址
         public static readonly string ReleasePath = $"{CommonUtil.GetStandardPath(Path.GetDirectoryName(RootPath))}/Release";

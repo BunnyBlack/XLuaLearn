@@ -75,7 +75,12 @@ namespace CommonCs.Utils
             return path;
         }
 
-        public static string GetLuaModuleName(string path)
+        /// <summary>
+        /// 获取相对于 Scripts 文件夹的路径
+        /// </summary>
+        /// <param name="path">lua脚本路径</param>
+        /// <returns></returns>
+        public static string GetRelativeLuaPath(string path)
         {
             var scriptName = path;
 
@@ -98,6 +103,17 @@ namespace CommonCs.Utils
             }
 
             return scriptName;
+        }
+
+        /// <summary>
+        /// 通过 lua 脚本的相对路径获取 lua 模块名
+        /// </summary>
+        /// <param name="path">lua脚本相对路径</param>
+        /// <returns></returns>
+        public static string GetLuaModuleName(string path)
+        {
+            // 将路径的 / 替换为成员访问运算符 .
+            return path.Replace('/', '.');
         }
     }
 }

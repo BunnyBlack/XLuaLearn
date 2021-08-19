@@ -129,6 +129,41 @@ namespace Editor
             p.Close();
         }
         
+        [MenuItem("test/打开LuaScripts目录")]
+        private static void OpenLuaScriptsDir()
+        {
+            var p = new Process
+            {
+                StartInfo =
+                {
+                    //设置要启动的应用程序
+                    FileName = "cmd.exe",
+                    // 是否使用操作系统shell启动
+                    UseShellExecute = false,
+                    // 接受来自调用程序的输入信息
+                    RedirectStandardInput = true,
+                    // 输出信息
+                    RedirectStandardOutput = true,
+                    // 输出错误
+                    RedirectStandardError = true,
+                    // 不显示程序窗口
+                    CreateNoWindow = true
+                }
+            };
+            //启动程序
+            p.Start();
+            var outputPath = Global.ExportLuaPath;
+            if (!Directory.Exists(outputPath))
+            {
+                Directory.CreateDirectory(outputPath);
+            }
+            p.StandardInput.WriteLine($"start \"\" \"{outputPath}\"&exit");
+            p.WaitForExit();
+            p.Close();
+        }
+        
+        
+        
         
     }
 }

@@ -9,7 +9,8 @@
 """
 import os
 import sys
-import bundle_compressor as compressor
+import bundle_compressor
+import lua_pack_compressor
 import res_diff_pack_generator
 
 
@@ -18,11 +19,15 @@ def generate_version_res_bundles(source_path: str, output_path: str, release_pat
         os.mkdir(output_path)
     if not os.path.exists(release_path):
         os.mkdir(release_path)
-    compressor.generate_version_res_bundles(source_path, output_path, release_path)
+    bundle_compressor.generate_version_res_bundles(source_path, output_path, release_path)
 
 
 def generate_res_diff_pack(current_version: int, output_path: str, release_path: str):
     res_diff_pack_generator.generate_res_diff_pack(current_version, output_path, release_path)
+
+
+def generate_version_lua_pack(source_path: str, lua_output_path: str, release_path: str):
+    lua_pack_compressor.generate_version_lua_pack(source_path, lua_output_path, release_path)
 
 
 if __name__ == "__main__":

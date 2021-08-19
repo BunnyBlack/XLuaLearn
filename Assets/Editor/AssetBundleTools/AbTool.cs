@@ -109,10 +109,10 @@ namespace Editor.AssetBundleTools
             Debug.Log($"生成Lua文件打包配置xml: {xmlPath}");
         }
 
-        [MenuItem("Tools/Lua工具/打Lua包")]
+        [MenuItem("Tools/Lua工具/生成Lua全文件索引")]
         private static void BuildLuaPack()
         {
-            CreateStreamingDir();
+            CreateExportLuaDir();
 
             ParseLuaConfig();
             CreateLuaPathDicReferringToConfig();
@@ -131,6 +131,15 @@ namespace Editor.AssetBundleTools
                 return;
 
             Directory.CreateDirectory(Global.BundleOutputPath);
+            AssetDatabase.Refresh();
+        }
+        
+        private static void CreateExportLuaDir()
+        {
+            if (Directory.Exists(Global.ExportLuaPath))
+                return;
+
+            Directory.CreateDirectory(Global.ExportLuaPath);
             AssetDatabase.Refresh();
         }
 
@@ -287,7 +296,7 @@ namespace Editor.AssetBundleTools
                 if (fullPath.EndsWith(".meta"))
                     continue;
 
-                var moduleName = CommonUtil.GetLuaModuleName(fullPath);
+                var moduleName = CommonUtil.GetStandardPath(CommonUtil.GetRelativeLuaPath(fullPath));
                 if (sourceDic.ContainsKey(moduleName))
                 {
                     var message = new[]
@@ -451,8 +460,8 @@ namespace Editor.AssetBundleTools
                 var fullPath = pair.Value;
 
                 var fileNode = xmlDoc.CreateElement("file");
-                fileNode.SetAttribute("module_name", filename);
-                fileNode.SetAttribute("path", CommonUtil.GetStandardPath(fullPath));
+                fileNode.SetAttribute("relative_path", filename);
+                fileNode.SetAttribute("fullpath", CommonUtil.GetStandardPath(fullPath));
                 root.AppendChild(fileNode);
             }
 
